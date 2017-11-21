@@ -10,6 +10,7 @@
 int main(int argc, char const *argv[]) {
 
   // parse command line arguments
+  SimEnv simenv;
   cmdpars(argc, argv, simenv);
 
   // create terminal output

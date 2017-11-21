@@ -1,3 +1,19 @@
+/*__DECLARATION__
+ *
+ * 
+ *      MENBSIM
+ *      N-Body Simulation of a elliptic galaxy using multipole expansions.
+ *      This project is done in the lecture of computational astrophysics
+ *      in 2017 at University of Zurich (UZH).
+ *
+ *      author: 
+ *      david schmidig         [     david@davencyw.net   ]
+ *      ETH Zurich             [ davschmi@student.ethz.ch ]
+ *      DAVENCYW CODE          [        davencyw.net      ]
+ */
+#ifndef __CMDPARSER_HH__
+#define __CMDPARSER_HH__
+
 #include <cstdlib>
 #include <string>
 #include "boost/program_options.hpp"
@@ -5,26 +21,24 @@
 #include "simenv.hh"
 #include "global.hh"
 
-void cmdpars(int argc, char const* argv[], SimEnv& simenv){
-
+void cmdpars(const int argc, char const* argv[], SimEnv& simenv){
 
 	//set default simenv
-	simenv._N = N;
-	simenv._dt = DT;
-	simenv._nThreads = NTHREADS;
-	simenv._scheduling = SCHEDULE;
-	simenv._cuda = CUDA;
+	simenv._nthreads = __P_DEF_NTHREADS;
+	simenv._scheduling = __P_DEF_SCHEDULE;
+	simenv._cuda = __P_DEF_CUDA;
 
 
 	//BOOST PRORGAM OPTIONS
 	namespace po = boost::program_options;
 	po::options_description desc("Parameters");
 	desc.add_options() 
-      //("help", "Print help messages") 
+      ("help", "Print help messages") 
       //(",N", po::value<int>(&(simenv._N)) ,"number of bodies") 
       //(",t", po::value<double>(&(simenv._dt))->required() ,"timestep of simulation")
       //("xbod,x", po::value<std::string>(&(simenv._xbodpath))->required(), "file to x coordinates array")
-      ("nthreads,n", po::value<int>(&(simenv._nThreads)) ,"number of threads [optional]")
+      ("outfolder,o", po::value<std::string>(&(simenv._outfolder)), "output folder [optional]")
+      ("nthreads,n", po::value<int>(&(simenv._nthreads)) ,"number of threads [optional]")
       ("schedule,s", po::value<int>(&(simenv._scheduling)) ,"omp scheduling [optional]")
       ("cuda", "enable cuda support [optional]");
 
@@ -61,4 +75,6 @@ void cmdpars(int argc, char const* argv[], SimEnv& simenv){
 
 	//END BOOST PROGRAM OPTIONS
 
-}
+};
+
+#endif //__CMDPARSER_HH__
