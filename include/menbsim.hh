@@ -14,6 +14,7 @@
 #ifndef __MENBSIM_HH__
 #define __MENBSIM_HH__
 
+#include "forcesolver.hh"
 #include "global.hh"
 #include "inputreader.hh"
 #include "simenv.hh"
@@ -35,7 +36,11 @@ class Menbsim {
   //    2 - terminal output long
   bool verifyinputdensity(int output);
 
+  void step();
+  void steps(int);
+
  private:
+  Forcesolver* solver;
   SimEnv _simenv;
   datastruct _inputdata;
 };

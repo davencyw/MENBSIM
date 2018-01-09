@@ -52,16 +52,18 @@ class Inputreader {
 
     // allocate memory
     datastruct data;
+    data.numparticles = std::get<0>(headertuple);
+
     for (int i = 0; i < data.numdata; ++i) {
-      data.datavector.push_back(array_t(std::get<0>(headertuple)));
+      data.datavector.push_back(array_t(data.numparticles));
     }
 
     // read values
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < data.numdata; ++i) {
       precision_t extent_min(0);
       precision_t extent_max(0);
 
-      for (int j = 0; j < std::get<0>(headertuple); ++j) {
+      for (int j = 0; j < data.numparticles; ++j) {
         precision_t value;
         filestream >> value;
         data.datavector[i](j) = value;
