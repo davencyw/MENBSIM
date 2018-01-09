@@ -4,11 +4,11 @@
 #include <iostream>
 #include <string>
 
-#include "simenv.hh"
 #include "cmdparser.hh"
+#include "menbsim.hh"
+#include "simenv.hh"
 
 int main(int argc, char const *argv[]) {
-
   // parse command line arguments
   SimEnv simenv;
   cmdpars(argc, argv, simenv);
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
             << "        ETH Zurich\n\n\n";
 
   // start main program
-  // TODO(dave): everything
+  Menbsim sim(simenv);
 
   return 0;
 }

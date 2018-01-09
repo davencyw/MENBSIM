@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(PROJECTNAME)
+project(menbsim)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
@@ -45,6 +45,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 file (GLOB SOURCES
 		src/main.cc
+		src/menbsim.cc
 )
 
 
@@ -54,4 +55,4 @@ file (GLOB SOURCES
 ##
 #
 
-add_executable (PROJECTNAME ${SOURCES})
+add_executable (menbsim ${SOURCES})
