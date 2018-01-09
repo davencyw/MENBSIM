@@ -14,6 +14,21 @@ void Menbsim::initialize(int checks) {
             << "\n"
             << _inputdata.extent[3].first << "\t" << _inputdata.extent[3].second
             << "\n\n\n";
+
+  // create local pointers for easy access and readable code
+  *_masses = _inputdata.datavector[0];
+  *_xposition = _inputdata.datavector[1];
+  *_yposition = _inputdata.datavector[2];
+  *_zposition = _inputdata.datavector[3];
+  *_xvelocity = _inputdata.datavector[4];
+  *_yvelocity = _inputdata.datavector[5];
+  *_zvelocity = _inputdata.datavector[6];
+  *_softening = _inputdata.datavector[7];
+  *_potential = _inputdata.datavector[8];
+
+  if (checks) {
+    verifyinputdensity(1);
+  }
 }
 
 bool Menbsim::verifyinputdensity(int output) {
@@ -30,5 +45,17 @@ void Menbsim::steps(int numsteps) {
 }
 
 void Menbsim::step() {
-  // TODO(dave): do primitive step
+  // compute force
+  _solver->solve(*_xvelocity, *_yvelocity, *_zvelocity, *_masses, _forcex,
+                 _forcey, _forcez);
+
+  // update particle velocity
+  *_xvelocity += *_masses * _forcex;
+  *_yvelocity += *_masses * _forcey;
+  *_zvelocity += *_masses * _forcez;
+
+  // update particle position
+  *_xposition += *_xvelocity;
+  *_yposition += *_yvelocity;
+  *_zposition += *_zvelocity;
 }

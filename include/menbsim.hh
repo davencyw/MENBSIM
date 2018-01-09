@@ -40,9 +40,23 @@ class Menbsim {
   void steps(int);
 
  private:
-  Forcesolver* solver;
+  Forcesolver* _solver;
   SimEnv _simenv;
+
   datastruct _inputdata;
+  array_t* _masses;
+  array_t* _xposition;
+  array_t* _yposition;
+  array_t* _zposition;
+  array_t* _xvelocity;
+  array_t* _yvelocity;
+  array_t* _zvelocity;
+  array_t* _softening;
+  array_t* _potential;
+
+  array_t _forcex;
+  array_t _forcey;
+  array_t _forcez;
 };
 
 #endif  //__MENBSIM_HH__
