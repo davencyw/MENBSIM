@@ -19,9 +19,16 @@
 #include "inputreader.hh"
 #include "simenv.hh"
 
+namespace Menbsim {
+
+enum class FORCESOLVERTYPE { NAIVE = 0, MULTIPOLE = 1 };
+
 class Menbsim {
  public:
   Menbsim(SimEnv simenv) : _simenv(simenv){};
+  Menbsim(SimEnv simenv, FORCESOLVERTYPE type) : _simenv(simenv) {
+    switchsolver(type);
+  };
 
   // Initialize data and do verification if wanted
   // checks:
@@ -39,6 +46,15 @@ class Menbsim {
   void step();
   void steps(int);
 
+  void switchsolver(FORCESOLVERTYPE type) {
+    switch (type) {
+      case FORCESOLVERTYPE::MULTIPOLE: {
+        _solver = new Multipolesolver;
+      } break;
+      default: { _solver = new Naivesolver; } break;
+    }
+  }
+
  private:
   bool _initialized = false;
 
@@ -46,6 +62,7 @@ class Menbsim {
   SimEnv _simenv;
 
   datastruct _inputdata;
+  unsigned int _numparticles;
   array_t* _masses;
   array_t* _xposition;
   array_t* _yposition;
@@ -60,5 +77,7 @@ class Menbsim {
   array_t _forcey;
   array_t _forcez;
 };
+
+}  // namespace menbsim
 
 #endif  //__MENBSIM_HH__

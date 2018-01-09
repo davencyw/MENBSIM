@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+namespace Menbsim {
+
 void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
   _inputdata = Inputreader::readfromfile(_simenv._inputfilepath);
@@ -45,9 +47,14 @@ void Menbsim::steps(int numsteps) {
 }
 
 void Menbsim::step() {
+  if (!_initialized) {
+    // TODO(dave): throw error
+    return;
+  }
+
   // compute force
-  _solver->solve(*_xvelocity, *_yvelocity, *_zvelocity, *_masses, _forcex,
-                 _forcey, _forcez);
+  _solver->solve(_numparticles, *_xvelocity, *_yvelocity, *_zvelocity, *_masses,
+                 _forcex, _forcey, _forcez);
 
   // update particle velocity
   *_xvelocity += *_masses * _forcex;
@@ -59,3 +66,5 @@ void Menbsim::step() {
   *_yposition += *_yvelocity;
   *_zposition += *_zvelocity;
 }
+
+}  // namespace menbsim

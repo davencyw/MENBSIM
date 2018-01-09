@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
             << "        ETH Zurich\n\n\n";
 
   // start main program
-  Menbsim sim(simenv);
+  Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::NAIVE);
   sim.initialize(0);
 
   return 0;
