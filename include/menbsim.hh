@@ -40,6 +40,8 @@ class Menbsim {
   void steps(int);
 
  private:
+  bool _initialized = false;
+
   Forcesolver* _solver;
   SimEnv _simenv;
 
