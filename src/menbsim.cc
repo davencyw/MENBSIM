@@ -2,5 +2,5 @@
 #include "inputreader.hh"
 
 void Menbsim::initialize() {
-  datastruct = Inputreader::readfromfile(_simenv._inputfilepath);
+  _inputdata = Inputreader::readfromfile(_simenv._inputfilepath);
 }
