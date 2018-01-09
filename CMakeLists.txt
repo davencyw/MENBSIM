@@ -46,7 +46,8 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 file (GLOB SOURCES
 		src/main.cc
 		src/menbsim.cc
-		src/forcesolver.cc
+		src/naivesolver.cc
+		src/multipolesolver.cc
 )
 
 

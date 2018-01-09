@@ -9,24 +9,25 @@ void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
   _inputdata = Inputreader::readfromfile(_simenv._inputfilepath);
 
-  std::cout << "got " << _inputdata.numparticles << " particles with extent: \n"
-            << _inputdata.extent[1].first << "\t" << _inputdata.extent[1].second
-            << "\n"
-            << _inputdata.extent[2].first << "\t" << _inputdata.extent[2].second
-            << "\n"
-            << _inputdata.extent[3].first << "\t" << _inputdata.extent[3].second
-            << "\n\n\n";
+  std::cout
+      << "got " << _inputdata.numparticles << " particles with extent: \n\n"
+      << _inputdata.extent[1].first << "\t" << _inputdata.extent[1].second
+      << "\n"
+      << _inputdata.extent[2].first << "\t" << _inputdata.extent[2].second
+      << "\n"
+      << _inputdata.extent[3].first << "\t" << _inputdata.extent[3].second
+      << "\n\n_____________________________________________________\n\n\n";
 
   // create local pointers for easy access and readable code
-  *_masses = _inputdata.datavector[0];
-  *_xposition = _inputdata.datavector[1];
-  *_yposition = _inputdata.datavector[2];
-  *_zposition = _inputdata.datavector[3];
-  *_xvelocity = _inputdata.datavector[4];
-  *_yvelocity = _inputdata.datavector[5];
-  *_zvelocity = _inputdata.datavector[6];
-  *_softening = _inputdata.datavector[7];
-  *_potential = _inputdata.datavector[8];
+  _masses = &_inputdata.datavector[0];
+  _xposition = &_inputdata.datavector[1];
+  _yposition = &_inputdata.datavector[2];
+  _zposition = &_inputdata.datavector[3];
+  _xvelocity = &_inputdata.datavector[4];
+  _yvelocity = &_inputdata.datavector[5];
+  _zvelocity = &_inputdata.datavector[6];
+  _softening = &_inputdata.datavector[7];
+  _potential = &_inputdata.datavector[8];
 
   if (checks) {
     verifyinputdensity(1);
