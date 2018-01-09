@@ -53,6 +53,11 @@ void Menbsim::step() {
     return;
   }
 
+  // reset forces
+  _forcex.setZero();
+  _forcey.setZero();
+  _forcez.setZero();
+
   // compute force
   _solver->solve(_numparticles, *_xvelocity, *_yvelocity, *_zvelocity, *_masses,
                  _forcex, _forcey, _forcez);

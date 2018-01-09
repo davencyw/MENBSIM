@@ -7,6 +7,8 @@ inline void naivesolver_computation(array_t& xpos, array_t& ypos, array_t& zpos,
                                     array_t& forcey, array_t& forcez,
                                     const unsigned int i,
                                     const unsigned int j) {
+  // TODO(dave): add softening
+
   const precision_t x1(xpos(i));
   const precision_t y1(ypos(i));
   const precision_t z1(zpos(i));
@@ -32,18 +34,17 @@ inline void naivesolver_computation(array_t& xpos, array_t& ypos, array_t& zpos,
   const precision_t fy1(rmagnitude * y1y2);
   const precision_t fz1(rmagnitude * z1z2);
 
-  forcex(i) = fx1;
-  forcey(i) = fy1;
-  forcez(i) = fz1;
-  forcex(j) = -fx1;
-  forcey(j) = -fy1;
-  forcez(j) = -fz1;
+  forcex(i) += fx1;
+  forcey(i) += fy1;
+  forcez(i) += fz1;
+  forcex(j) += -fx1;
+  forcey(j) += -fy1;
+  forcez(j) += -fz1;
 };
 
 void Naivesolver::solve(unsigned int numparticles, array_t& xpos, array_t& ypos,
                         array_t& zpos, array_t& masses, array_t& forcex,
                         array_t& forcey, array_t& forcez) {
-  // TODO(dave): add softening
   // NOT OPTIMIZED
   for (unsigned int i = 0; i < numparticles; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
