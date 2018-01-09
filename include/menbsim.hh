@@ -77,7 +77,7 @@ class Menbsim {
   array_t _forcey;
   array_t _forcez;
 
-  unsigned int _step_i = 0;
+  unsigned int _step_i = 1;
 };
 
 }  // namespace menbsim
