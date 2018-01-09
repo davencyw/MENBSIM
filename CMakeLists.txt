@@ -25,7 +25,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
   SET (RELEASE_FLAGS "${RELEASE_FLAGS} -Rpass=loop-vectorize")
 endif()
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -mavx2 -mavx -msse -march=native -ftree-vectorize -ftree-vectorizer-verbose=3")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -mavx2 -mavx -msse -march=native -ftree-vectorize -fopt-info-vec-optimized")
 
 set (CMAKE_CXX_FLAGS_RELEASE "${RELEASE_FLAGS}" CACHE STRING "C++ Release flags" FORCE)
 set (CMAKE_C_FLAGS_RELEASE "${RELEASE_FLAGS}" CACHE STRING "C Release flags" FORCE)

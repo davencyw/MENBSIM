@@ -36,6 +36,9 @@ int main(int argc, char const *argv[]) {
   // start main program
   Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::NAIVE);
   sim.initialize(0);
+  sim.steps(3);
+
+  std::cout << "\n\n\nfinished simulation\n";
 
   return 0;
 }
