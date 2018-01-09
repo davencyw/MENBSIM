@@ -22,8 +22,6 @@
 #include <vector>
 
 struct datastruct {
-  datastruct() { datavector.reserve(numdata); }
-
   unsigned int numparticles;
   static const int numdata = 9;
 
@@ -55,11 +53,11 @@ class Inputreader {
     // allocate memory
     datastruct data;
     for (int i = 0; i < data.numdata; ++i) {
-      data.datavector[i] = array_t(std::get<0>(headertuple));
+      data.datavector.push_back(array_t(std::get<0>(headertuple)));
     }
 
     // read values
-    for (int i = 0; i < data.numdata; ++i) {
+    for (int i = 0; i < 1; ++i) {
       precision_t extent_min(0);
       precision_t extent_max(0);
 
@@ -71,7 +69,7 @@ class Inputreader {
         extent_max = std::max(extent_max, value);
       }
 
-      data.extent[i] = std::make_pair(extent_min, extent_max);
+      data.extent.push_back(std::make_pair(extent_min, extent_max));
     }
 
     return data;

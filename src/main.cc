@@ -28,6 +28,7 @@ int main(int argc, char const *argv[]) {
 
   // start main program
   Menbsim sim(simenv);
+  sim.initialize(0);
 
   return 0;
 }
