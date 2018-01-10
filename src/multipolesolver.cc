@@ -10,15 +10,15 @@ void Multipolesolver::solve(const unsigned int numparticles,
                             const precision_t softening, const Extent extent) {
   // create tree first
   createTree(numparticles, xpos, ypos, zpos, extent);
+
+  for (unsigned particle_i = 0; particle_i < numparticles; ++particle_i) {
+    // TODO(dave): go through all highest possible levels of octree
+  }
 };
 
 void Multipolesolver::createTree(const unsigned int numparticles,
                                  const array_t& xpos, const array_t& ypos,
                                  const array_t& zpos, const Extent extent) {
-  _octree =
-      new oct::Octree(Eigen::Vector3d(0.0, 0.0, 0.0), extent, xpos, ypos, zpos);
-
-  for (unsigned particle_i = 0; particle_i < numparticles; ++particle_i) {
-    _octree->insert(particle_i);
-  }
+  _octree = new oct::Octree(extent, xpos, ypos, zpos, 8);
+  _octree->init();
 }

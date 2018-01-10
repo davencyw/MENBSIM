@@ -25,6 +25,11 @@ class Forcesolver {
                      const array_t& masses, array_t& forcex, array_t& forcey,
                      array_t& forcez, const precision_t softening,
                      const Extent extent) = 0;
+
+  void setconfig() {
+    // TODO(dave): write config
+    // leafsize for octree in multipole
+  }
 };
 
 class Naivesolver : public Forcesolver {
