@@ -24,6 +24,8 @@ struct SimEnv {
   double _dt;
   // number of steps
   int _nsteps;
+  // softening parameter for potential
+  double _softeningparam;
 
   // computing environment
   //____________________

@@ -19,11 +19,9 @@ void Menbsim::initialize(int checks) {
   // print info
   std::cout
       << "got " << _numparticles << " particles with extent: \n\n"
-      << _inputdata.extent[1].first << "\t" << _inputdata.extent[1].second
-      << "\n"
-      << _inputdata.extent[2].first << "\t" << _inputdata.extent[2].second
-      << "\n"
-      << _inputdata.extent[3].first << "\t" << _inputdata.extent[3].second
+      << _inputdata.extent.x.first << "\t" << _inputdata.extent.x.second << "\n"
+      << _inputdata.extent.y.first << "\t" << _inputdata.extent.y.second << "\n"
+      << _inputdata.extent.z.first << "\t" << _inputdata.extent.z.second
       << "\n\n_____________________________________________________\n\n\n";
 
   // create local pointers for easy access and readable code
@@ -54,6 +52,7 @@ bool Menbsim::verifyinputdensity(int output) {
   // density funcitno described by Hernquist
 
   // TODO(dave): add poissonian error bars to the numeric density profile
+  return true;
 }
 
 void Menbsim::steps(int numsteps) {
@@ -78,19 +77,25 @@ void Menbsim::step() {
   _forcey.setZero();
   _forcez.setZero();
 
+  Extent extent = getextent();
+
   // compute force
   _solver->solve(_numparticles, *_xvelocity, *_yvelocity, *_zvelocity, *_masses,
-                 _forcex, _forcey, _forcez);
+                 _forcex, _forcey, _forcez, _softeningparam, extent);
 
   // // update particle velocity
-  *_xvelocity += *_masses * _forcex;
-  *_yvelocity += *_masses * _forcey;
-  *_zvelocity += *_masses * _forcez;
+  *_xvelocity += _forcex / *_masses * _deltat;
+  *_yvelocity += _forcey / *_masses * _deltat;
+  *_zvelocity += _forcez / *_masses * _deltat;
 
   // update particle position
-  *_xposition += *_xvelocity;
-  *_yposition += *_yvelocity;
-  *_zposition += *_zvelocity;
+  *_xposition += *_xvelocity * _deltat;
+  *_yposition += *_yvelocity * _deltat;
+  *_zposition += *_zvelocity * _deltat;
+}
+
+Extent Menbsim::getextent() {
+  // TODO(dave): get extent of all particles in all dimensions
 }
 
 }  // namespace menbsim

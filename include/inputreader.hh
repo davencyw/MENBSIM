@@ -21,23 +21,6 @@
 #include <tuple>
 #include <vector>
 
-struct datastruct {
-  unsigned int numparticles;
-  static const int numdata = 9;
-
-  // 0 array_t masses;
-  // 1 array_t xposition;
-  // 2 array_t yposition;
-  // 3 array_t zposition;
-  // 4 array_t xvelocity;
-  // 5 array_t yvelocity;
-  // 6 array_t zvelocity;
-  // 7 array_t softening;
-  // 8 array_t potential;
-  std::vector<array_t> datavector;
-  std::vector<std::pair<precision_t, precision_t>> extent;
-};
-
 class Inputreader {
  public:
   static datastruct readfromfile(std::string fullfilepath) {
@@ -58,6 +41,8 @@ class Inputreader {
       data.datavector.push_back(array_t(data.numparticles));
     }
 
+    std::vector<std::pair<precision_t, precision_t>> extents;
+
     // read values
     for (int i = 0; i < data.numdata; ++i) {
       precision_t extent_min(0);
@@ -71,8 +56,12 @@ class Inputreader {
         extent_max = std::max(extent_max, value);
       }
 
-      data.extent.push_back(std::make_pair(extent_min, extent_max));
+      extents.push_back(std::make_pair(extent_min, extent_max));
     }
+
+    data.extent.x = extents[1];
+    data.extent.y = extents[2];
+    data.extent.z = extents[3];
 
     return data;
   }

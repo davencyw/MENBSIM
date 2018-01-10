@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- *
+ * 
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author:
+ *      author: 
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -31,15 +31,18 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   namespace po = boost::program_options;
   po::options_description desc("Parameters");
   desc.add_options()("help", "Print help messages")
-      //(",N", po::value<int>(&(simenv._N)) ,"number of bodies")
       //(",t", po::value<double>(&(simenv._dt))->required() ,"timestep of
-      //simulation")
-      //("xbod,x", po::value<std::string>(&(simenv._xbodpath))->required(),
-      //"file to x coordinates array")
-      ("input,i", po::value<std::string>(&(simenv._inputfilepath))->required(),
-       "output folder")("outfolder,o",
-                        po::value<std::string>(&(simenv._outfolder)),
-                        "output folder [optional]")(
+      // simulation")
+      ("dt,d", po::value<double>(&(simenv._dt))->required(), "timestep")(
+          "numsteps", po::value<int>(&(simenv._nsteps))->required(),
+          "number of timesteps")(
+          "softening", po::value<double>(&(simenv._softeningparam))->required(),
+          "softening of potential")(
+          "input,i",
+          po::value<std::string>(&(simenv._inputfilepath))->required(),
+          "output folder")("outfolder,o",
+                           po::value<std::string>(&(simenv._outfolder)),
+                           "output folder [optional]")(
           "nthreads,n", po::value<int>(&(simenv._nthreads)),
           "number of threads [optional]")("schedule,s",
                                           po::value<int>(&(simenv._scheduling)),
@@ -66,8 +69,6 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
     std::cerr << desc << std::endl;
     exit(1);
   }
-
-  // sanity check input
 
   // END BOOST PROGRAM OPTIONS
 };

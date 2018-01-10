@@ -46,10 +46,12 @@ class Menbsim {
   void step();
   void steps(int);
 
+  Extent getextent();
+
   void switchsolver(FORCESOLVERTYPE type) {
     switch (type) {
       case FORCESOLVERTYPE::MULTIPOLE: {
-        _solver = new Multipolesolver;
+        _solver = new Multipolesolver();
       } break;
       default: { _solver = new Naivesolver; } break;
     }
@@ -57,6 +59,8 @@ class Menbsim {
 
  private:
   bool _initialized = false;
+
+  precision_t _deltat;
 
   Forcesolver* _solver;
   SimEnv _simenv;
@@ -73,6 +77,7 @@ class Menbsim {
   array_t* _softening;
   array_t* _potential;
 
+  precision_t _softeningparam;
   array_t _forcex;
   array_t _forcey;
   array_t _forcez;

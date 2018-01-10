@@ -5,12 +5,15 @@
 #include <iostream>
 
 // TODO(dave): work with eigens raw buffer to get autovectorization!
-void Naivesolver::solve(unsigned int numparticles, array_t& xpos, array_t& ypos,
-                        array_t& zpos, array_t& masses, array_t& forcex,
-                        array_t& forcey, array_t& forcez) {
+void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
+                        const array_t& ypos, const array_t& zpos,
+                        const array_t& masses, array_t& forcex, array_t& forcey,
+                        array_t& forcez, const precision_t softening,
+                        const Extent extent) {
   // NOT OPTIMIZED
   for (unsigned int i = 0; i < numparticles; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
+      // SSA
       const precision_t x1(xpos(i));
       const precision_t y1(ypos(i));
       const precision_t z1(zpos(i));
@@ -23,8 +26,8 @@ void Naivesolver::solve(unsigned int numparticles, array_t& xpos, array_t& ypos,
       const precision_t y1y2(y1 - y2);
       const precision_t z1z2(z1 - z2);
 
-      const precision_t rmagnitude(
-          std::sqrt(x1x2 * x1x2 + y1y2 * y1y2 + z1z2 * z1z2));
+      const precision_t rmagnitude(std::sqrt(
+          x1x2 * x1x2 + y1y2 * y1y2 + z1z2 * z1z2 + softening * softening));
 
       const precision_t m1(masses(i));
       const precision_t m2(masses(j));

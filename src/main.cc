@@ -33,8 +33,12 @@ int main(int argc, char const *argv[]) {
             << "        ETH Zurich\n\n"
             << "_____________________________________________________\n\n\n";
 
+  // initialize environment
+  omp_set_num_threads(simenv._nthreads);
+  omp_set_dynamic(simenv._scheduling);
+
   // start main program
-  Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::NAIVE);
+  Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
   sim.initialize(0);
 
   sim.steps(3);
