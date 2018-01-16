@@ -4,9 +4,9 @@
 
 #terminal notification
 clear
-echo "______\n"
+echo "_________"
 echo "make.sh"
-echo "______\n"
+echo "_________"
 
 #build does not exist yet
 mkdir -p ../build
