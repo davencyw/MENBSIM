@@ -69,11 +69,26 @@ class Reader {
 
 class Writer {
  public:
-  // format:
-  //    0 - only masses
-  //    1 - masses, velocity
-  static void writetofile(std::string fullfilepath, Datastruct& data,
-                          int format) {}
+  // only writes location of entities to a csv file
+  static void writetofile(std::string fullfilepath, array_t& xpos,
+                          array_t& ypos, array_t& zpos) {
+    const unsigned int numentities(xpos.size());
+
+    std::ofstream filestream;
+    filestream.open(fullfilepath, std::ios::out);
+
+    // write header
+    filestream << "XPOS,YPOS,ZPOS," << numentities << "\n";
+
+    // write data
+    for (unsigned entitiy_i = 0; entitiy_i < numentities; ++entitiy_i) {
+      filestream << xpos(entitiy_i) << "," << ypos(entitiy_i) << ","
+                 << zpos(entitiy_i) << "\n";
+    }
+
+    // finalize
+    filestream.close();
+  }
 };
 
 #endif  //__INPUTREADER_HH__

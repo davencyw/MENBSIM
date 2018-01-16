@@ -96,6 +96,8 @@ void Menbsim::step() {
   *_xposition += *_xvelocity * _deltat;
   *_yposition += *_yvelocity * _deltat;
   *_zposition += *_zvelocity * _deltat;
+
+  // TODO(dave): write to file
 }
 
 Extent Menbsim::getextent() {
