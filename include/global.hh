@@ -36,7 +36,7 @@ struct Extent {
   std::pair<precision_t, precision_t> z;
 };
 
-struct datastruct {
+struct Datastruct {
   unsigned int numparticles;
   static const int numdata = 9;
 

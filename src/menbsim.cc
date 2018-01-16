@@ -1,14 +1,17 @@
 #include "menbsim.hh"
-#include "inputreader.hh"
+#include "io.hh"
 
+#include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
+#include <parallel/algorithm>
 
 namespace Menbsim {
 
 void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
-  _inputdata = Inputreader::readfromfile(_simenv._inputfilepath);
+  _inputdata = Reader::readfromfile(_simenv._inputfilepath);
   _numparticles = _inputdata.numparticles;
 
   // sanitize input
@@ -65,8 +68,9 @@ void Menbsim::step() {
   if (!_initialized) {
     // TODO(dave): throw error
     std::cout << "\n       ! W A R N I N G !\n"
-              << " N O T   I N I T I A L I Z E D!\n"
-              << "    S T E P   I G N O R E D\n\n\n";
+              << " N O T   I N I T I A L I Z E D\n"
+              << "   S T E P S   I G N O R E D\n\n\n";
+    exit(EXIT_FAILURE);
     return;
   }
 
@@ -95,7 +99,30 @@ void Menbsim::step() {
 }
 
 Extent Menbsim::getextent() {
-  // TODO(dave): get extent of all particles in all dimensions
+  // get extent of all particles in all dimensions
+  Extent extent;
+
+  const precision_t xmin(*__gnu_parallel::min_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  const precision_t xmax(*__gnu_parallel::max_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  const precision_t ymin(*__gnu_parallel::min_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  const precision_t ymax(*__gnu_parallel::max_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  const precision_t zmin(*__gnu_parallel::min_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  const precision_t zmax(*__gnu_parallel::max_element(
+      _xposition->data(), _xposition->data() + _xposition->size()));
+
+  extent.x = std::make_pair(xmin, xmax);
+  extent.y = std::make_pair(ymin, ymax);
+  extent.z = std::make_pair(zmin, zmax);
 }
 
 }  // namespace menbsim

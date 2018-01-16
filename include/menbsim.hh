@@ -16,12 +16,13 @@
 
 #include "forcesolver.hh"
 #include "global.hh"
-#include "inputreader.hh"
+#include "io.hh"
 #include "simenv.hh"
 
 namespace Menbsim {
 
-enum class FORCESOLVERTYPE { NAIVE = 0, MULTIPOLE = 1 };
+enum class FORCESOLVERTYPE { NAIVE, MULTIPOLE };
+enum VERIFICATION { NOVERIFICATION, VERIFYDENSITY };
 
 class Menbsim {
  public:
@@ -32,7 +33,7 @@ class Menbsim {
 
   // Initialize data and do verification if wanted
   // checks:
-  //    0 - on verification
+  //    0 - no verification
   //    1 - verify inputdensity
   void initialize(int checks);
 
@@ -65,7 +66,7 @@ class Menbsim {
   Forcesolver* _solver;
   SimEnv _simenv;
 
-  datastruct _inputdata;
+  Datastruct _inputdata;
   unsigned int _numparticles;
   array_t* _masses;
   array_t* _xposition;

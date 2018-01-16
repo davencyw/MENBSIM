@@ -21,9 +21,9 @@
 #include <tuple>
 #include <vector>
 
-class Inputreader {
+class Reader {
  public:
-  static datastruct readfromfile(std::string fullfilepath) {
+  static Datastruct readfromfile(std::string fullfilepath) {
     // open filestream
     // number of <particles, gasparticles, starparticles>
     std::tuple<int, int, int> headertuple;
@@ -34,7 +34,7 @@ class Inputreader {
         std::get<2>(headertuple);
 
     // allocate memory
-    datastruct data;
+    Datastruct data;
     data.numparticles = std::get<0>(headertuple);
 
     for (int i = 0; i < data.numdata; ++i) {
@@ -65,6 +65,15 @@ class Inputreader {
 
     return data;
   }
+};
+
+class Writer {
+ public:
+  // format:
+  //    0 - only masses
+  //    1 - masses, velocity
+  static void writetofile(std::string fullfilepath, Datastruct& data,
+                          int format) {}
 };
 
 #endif  //__INPUTREADER_HH__

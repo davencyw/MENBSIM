@@ -33,6 +33,14 @@ set (CMAKE_C_FLAGS_RELEASE "${RELEASE_FLAGS}" CACHE STRING "C Release flags" FOR
 
 ##___________________________
 ##
+##LIBRARIES
+##
+
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+##___________________________
+##
 ##FILES & FOLDERS
 ##
 
@@ -62,7 +70,8 @@ file (GLOB TESTSOURCES
 ##
 ##LIBRARIES & EXECUTABLES
 ##
-#
 
 add_executable (menbsim ${SOURCES})
-add_executable (test ${TESTSOURCES})
+
+add_executable (runtests ${TESTSOURCES})
+target_link_libraries(runtests ${GTEST_LIBRARIES} pthread)

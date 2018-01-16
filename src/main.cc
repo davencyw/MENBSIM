@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]) {
 
   // start main program
   Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
-  sim.initialize(0);
+  sim.initialize(Menbsim::NOVERIFICATION);
 
   sim.steps(3);
 
