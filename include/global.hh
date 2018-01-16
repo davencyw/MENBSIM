@@ -14,6 +14,8 @@
 #ifndef __GLOBAL_HH__
 #define __GLOBAL_HH__
 
+#include <vector>
+
 #include <eigen3/Eigen/Dense>
 
 // program properties
