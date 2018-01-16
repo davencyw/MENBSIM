@@ -54,7 +54,8 @@ bool Menbsim::verifyinputdensity(int output) {
   // TODO(dave): write verification of rho(r) comparing to the analyitcal
   // density funcitno described by Hernquist
 
-  // TODO(dave): add poissonian error bars to the numeric density profile
+  // TODO(dave): add poissonian error bars to the numeric density profile and
+  // plot
   return true;
 }
 
