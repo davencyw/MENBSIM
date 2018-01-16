@@ -53,6 +53,10 @@ file (GLOB SOURCES
 		src/multipolesolver.cc
 )
 
+file (GLOB TESTSOURCES
+		tests/test_octree.cc
+)
+
 
 ##___________________________
 ##
@@ -61,3 +65,4 @@ file (GLOB SOURCES
 #
 
 add_executable (menbsim ${SOURCES})
+add_executable (test ${TESTSOURCES})

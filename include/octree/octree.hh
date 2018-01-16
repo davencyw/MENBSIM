@@ -24,7 +24,15 @@
 
 namespace oct {
 
-class Octree;
+struct infoarrays {
+
+  array_t* xpos;
+  array_t* ypos;
+  array_t* zpos;
+
+  std::vector<array_t*> data;
+
+};
 
 // TODO(dave): Remove indicesvector on each level and only store on leaf level
 
