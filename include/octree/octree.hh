@@ -57,7 +57,7 @@ class Octreenode {
         assert(_indexinposarray.size() == 9);
         // set to no leaf
         _leaf = false;
-        // TODO(dave):create children
+        // create children
         for (unsigned child_i = 0; child_i < 8; ++child_i) {
           // TODO(dave): compute midpoint for child with _halfwidth
           Eigen::Vector3d midpoint(0, 0, 0);
@@ -87,9 +87,7 @@ class Octreenode {
                                           const precision_t y,
                                           const precision_t z,
                                           const Eigen::Vector3d midpoint) {
-    // TODO(dave): Implement!
     unsigned int index(0);
-
     // x axis
     if (x < midpoint(0)) {
       index |= (1u << 2);
@@ -102,7 +100,6 @@ class Octreenode {
     if (z > midpoint(2)) {
       index |= (1u << 1);
     }
-
     return index;
   }
 
