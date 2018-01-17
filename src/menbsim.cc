@@ -126,6 +126,8 @@ Extent Menbsim::getextent() {
   extent.x = std::make_pair(xmin, xmax);
   extent.y = std::make_pair(ymin, ymax);
   extent.z = std::make_pair(zmin, zmax);
+
+  return extent;
 }
 
 }  // namespace menbsim

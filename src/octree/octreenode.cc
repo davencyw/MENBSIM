@@ -4,10 +4,9 @@
 
 namespace oct {
 
-const unsigned int Octreenode::addpoint(const unsigned int indexinposarray,
-                                        const precision_t x,
-                                        const precision_t y,
-                                        const precision_t z) {
+const int Octreenode::addpoint(const unsigned int indexinposarray,
+                               const precision_t x, const precision_t y,
+                               const precision_t z) {
   // if root or not a leaf, propagate down
   if (!_leaf) {
     if (!_root) {
@@ -26,6 +25,8 @@ const unsigned int Octreenode::addpoint(const unsigned int indexinposarray,
       splitleaf();
     }
   }
+  // TODO(dave):
+  return -1;
 }
 
 void Octreenode::splitleaf() {

@@ -35,9 +35,9 @@ void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
       const precision_t forcemagnitude =
           m1 * m2 / (rmagnitude * rmagnitude * rmagnitude);
 
-      const precision_t fx1(rmagnitude * x1x2);
-      const precision_t fy1(rmagnitude * y1y2);
-      const precision_t fz1(rmagnitude * z1z2);
+      const precision_t fx1(forcemagnitude * x1x2);
+      const precision_t fy1(forcemagnitude * y1y2);
+      const precision_t fz1(forcemagnitude * z1z2);
 
       forcex(i) += fx1;
       forcey(i) += fy1;

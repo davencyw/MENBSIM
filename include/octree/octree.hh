@@ -33,7 +33,7 @@ class Octree {
  public:
   Octree(const Extent extent, const array_t& xpos, const array_t& ypos,
          const array_t& zpos, const int leafsize)
-      : _extent(extent), _xpos(xpos), _ypos(ypos), _zpos(zpos) {
+      : _xpos(xpos), _ypos(ypos), _zpos(zpos), _extent(extent) {
     _treeinfo = new Treeinfo(&_xpos, &_ypos, &_zpos, leafsize);
     assert(leafsize > 0);
   }

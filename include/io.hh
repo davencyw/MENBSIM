@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -37,18 +37,18 @@ class Reader {
     Datastruct data;
     data.numparticles = std::get<0>(headertuple);
 
-    for (int i = 0; i < data.numdata; ++i) {
+    for (unsigned int i = 0; i < data.numdata; ++i) {
       data.datavector.push_back(array_t(data.numparticles));
     }
 
     std::vector<std::pair<precision_t, precision_t>> extents;
 
     // read values
-    for (int i = 0; i < data.numdata; ++i) {
+    for (unsigned int i = 0; i < data.numdata; ++i) {
       precision_t extent_min(0);
       precision_t extent_max(0);
 
-      for (int j = 0; j < data.numparticles; ++j) {
+      for (unsigned int j = 0; j < data.numparticles; ++j) {
         precision_t value;
         filestream >> value;
         data.datavector[i](j) = value;
