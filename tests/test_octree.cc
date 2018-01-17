@@ -3,6 +3,8 @@
 #include "octree/octreenode.hh"
 
 #include <iostream>
+#include <vector>
+#include <array>
 
 #include <eigen3/Eigen/Dense>
 #include "gtest/gtest.h"
@@ -17,8 +19,8 @@ TEST(OctreeTest, OneLevel) {
   static const unsigned int indexorder[] = {5, 7, 4, 6, 1, 3, 0, 2};
 
   Extent extent;
-  extent.x = std::make_pair(-1, 1);
-  extent.y = std::make_pair(-1, 1);
+  extent.x =
+  extent.y =
   extent.z = std::make_pair(-1, 1);
 
   // in each cube below the root one point
@@ -39,17 +41,20 @@ TEST(OctreeTest, OneLevel) {
     auto indices((*children)[indexorder[child_i]]->getindices());
     EXPECT_EQ(indices->size(), 1);
     EXPECT_EQ((*indices)[0], child_i);
+    auto child_children((*children)[indexorder[child_i]]->getchildren());
+    // nullpointer test for uninitialized children
+    for(auto child_child_i : *child_children){
+      EXPECT_EQ(nullptr, child_child_i);
+    }
   }
-
-  // TODO(dave): nullpointer test for uninitialized children
 }
 
 TEST(OctreeTest, TwoLevels) {
   const unsigned int leafsize(1);
 
   Extent extent;
-  extent.x = std::make_pair(0, 1);
-  extent.y = std::make_pair(0, 1);
+  extent.x =
+  extent.y =
   extent.z = std::make_pair(0, 1);
 
   // two points in the same cube below root, one more split until level two
@@ -62,17 +67,21 @@ TEST(OctreeTest, TwoLevels) {
   octree.init();
 
   // TODO(dave): verify data
-  // verify data
   const std::array<oct::Octreenode*, 8>* children(
       octree.getroot()->getchildren());
+
+      for (size_t child_i = 0; child_i < 8; child_i++) {
+        const std::vector<unsigned int>* indices((*children)[child_i]->getindices());
+        EXPECT_EQ(indices->size(),0);
+      }
 }
 
 TEST(OctreeTest, ThreeLevels) {
   const unsigned int leafsize(1);
 
   Extent extent;
-  extent.x = std::make_pair(0, 1);
-  extent.y = std::make_pair(0, 1);
+  extent.x =
+  extent.y =
   extent.z = std::make_pair(0, 1);
 
   // two points in the same cube below root, one more split until level two
@@ -95,8 +104,8 @@ TEST(OctreeTest, OnEdge) {
   const unsigned int leafsize(2);
 
   Extent extent;
-  extent.x = std::make_pair(-1, 1);
-  extent.y = std::make_pair(-1, 1);
+  extent.x =
+  extent.y =
   extent.z = std::make_pair(-1, 1);
 
   // two points on the edge of the first level

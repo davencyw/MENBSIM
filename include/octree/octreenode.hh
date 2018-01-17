@@ -48,7 +48,8 @@ class Octreenode {
  public:
   Octreenode(Eigen::Vector3d midpoint, precision_t halfwidth,
              Treeinfo* treeinfo)
-      : _midpoint(midpoint), _halfwidth(halfwidth), _treeinfo(treeinfo) {}
+      : _midpoint(midpoint), _halfwidth(halfwidth), _treeinfo(treeinfo) {
+      }
   Octreenode(Eigen::Vector3d midpoint, bool root, precision_t halfwidth,
              Treeinfo* treeinfo)
       : _midpoint(midpoint),
@@ -64,7 +65,6 @@ class Octreenode {
   }
 
   const std::array<Octreenode*, 8>* getchildren() const { return &_children; }
-  const Octreenode* getchildren(bool t) const { return _children[0]; }
   const std::vector<unsigned int>* getindices() const {
     return &_indexinposarray;
   }

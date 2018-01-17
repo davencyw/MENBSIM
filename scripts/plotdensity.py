@@ -4,7 +4,6 @@ import scipy as sp
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
-
 #https://python-graph-gallery.com/370-3d-scatterplot/
 
 cmap = sb.cubehelix_palette(as_cmap=True, dark=0, light=1, reverse=True);
@@ -23,7 +22,7 @@ def plot2ddensity(datax, datay, filepath, time=0, xmin=0, xmax=0, ymin=0, ymax=0
 		ymin, ymax = ax.get_ylim();
 
 	df.plot.scatter(x='x',y='y',ax=ax, c='w', alpha=0.4, s=22);
-	
+
 	sb.plt.xlim(xmin,xmax);
 	sb.plt.ylim(ymin,ymax);
 
