@@ -35,6 +35,7 @@ class Octree {
          const array_t& zpos, const int leafsize)
       : _extent(extent), _xpos(xpos), _ypos(ypos), _zpos(zpos) {
     _treeinfo = new Treeinfo(&_xpos, &_ypos, &_zpos, leafsize);
+    assert(leafsize > 0);
   }
 
   void init() {
@@ -76,7 +77,7 @@ class Octree {
     const precision_t width(std::max(std::max(xwidth, ywidth), zwidth));
 
     Eigen::Vector3d midpoint(xorigin, yorigin, zorigin);
-    auto geometry_tuple = std::make_tuple(midpoint, width / .5);
+    auto geometry_tuple = std::make_tuple(midpoint, width * .5);
 
     return geometry_tuple;
   }

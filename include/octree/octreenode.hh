@@ -28,7 +28,9 @@ namespace oct {
 struct Treeinfo {
   Treeinfo(const array_t* xpos, const array_t* ypos, const array_t* zpos,
            const unsigned int leafsize)
-      : xpos(xpos), ypos(ypos), zpos(zpos), leafsize(leafsize) {}
+      : xpos(xpos), ypos(ypos), zpos(zpos), leafsize(leafsize) {
+    assert(leafsize > 0);
+  }
   const array_t* xpos;
   const array_t* ypos;
   const array_t* zpos;
@@ -38,9 +40,9 @@ struct Treeinfo {
 // TODO(dave): remove indicesvector on each level and only store on leaf level
 // TODO(dave): descructor for children
 
-static const precision_t splitterx[] = {-1, -1, -1, -1, 1, 1, 1, 1};
-static const precision_t splittery[] = {-1, -1, 1, 1, -1, -1, 1, 1};
-static const precision_t splitterz[] = {-1, 1, -1, 1, -1, 1, -1, 1};
+static const precision_t splitterx[] = {1, 1, 1, 1, -1, -1, -1, -1};
+static const precision_t splittery[] = {1, -1, 1, -1, 1, -1, 1, -1};
+static const precision_t splitterz[] = {-1, -1, 1, 1, -1, -1, 1, 1};
 
 class Octreenode {
  public:
@@ -54,8 +56,9 @@ class Octreenode {
         _halfwidth(halfwidth),
         _treeinfo(treeinfo) {
     if (_root) {
+      // root is never a leaf
       _leaf = false;
-      // create children first
+      // create children
       createchildren();
     }
   }

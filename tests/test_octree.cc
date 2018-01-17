@@ -44,8 +44,79 @@ TEST(OctreeTest, OneLevel) {
   // TODO(dave): nullpointer test for uninitialized children
 }
 
-TEST(OctreeTest, Twolevels) {}
-TEST(OctreeTest, AllInOneCube) {}
+TEST(OctreeTest, TwoLevels) {
+  const unsigned int leafsize(1);
+
+  Extent extent;
+  extent.x = std::make_pair(0, 1);
+  extent.y = std::make_pair(0, 1);
+  extent.z = std::make_pair(0, 1);
+
+  // two points in the same cube below root, one more split until level two
+  array_t xpos(4), ypos(4), zpos(4);
+  xpos << .25, .25, .75, .75;
+  ypos << .25, .25, .75, .75;
+  zpos << .125, .375, .625, .875;
+
+  oct::Octree octree(extent, xpos, ypos, zpos, leafsize);
+  octree.init();
+
+  // TODO(dave): verify data
+  // verify data
+  const std::array<oct::Octreenode*, 8>* children(
+      octree.getroot()->getchildren());
+}
+
+TEST(OctreeTest, ThreeLevels) {
+  const unsigned int leafsize(1);
+
+  Extent extent;
+  extent.x = std::make_pair(0, 1);
+  extent.y = std::make_pair(0, 1);
+  extent.z = std::make_pair(0, 1);
+
+  // two points in the same cube below root, one more split until level two
+  array_t xpos(2), ypos(2), zpos(2);
+  xpos << 0, .124;
+  ypos << 0, 0;
+  zpos << 0, 0;
+
+  oct::Octree octree(extent, xpos, ypos, zpos, leafsize);
+  octree.init();
+
+  // TODO(dave): verify data
+  const std::array<oct::Octreenode*, 8>* children(
+      octree.getroot()->getchildren());
+}
+
+TEST(DISABLED_OctreeTest, AllInOneCube) {}
+
+TEST(OctreeTest, OnEdge) {
+  const unsigned int leafsize(2);
+
+  Extent extent;
+  extent.x = std::make_pair(-1, 1);
+  extent.y = std::make_pair(-1, 1);
+  extent.z = std::make_pair(-1, 1);
+
+  // two points on the edge of the first level
+  array_t xpos(2), ypos(2), zpos(2);
+  xpos << 0, 0;
+  ypos << 0, 0;
+  zpos << 0, 0;
+
+  oct::Octree octree(extent, xpos, ypos, zpos, leafsize);
+  octree.init();
+
+  // verify data
+  const std::array<oct::Octreenode*, 8>* children(
+      octree.getroot()->getchildren());
+
+  auto indices((*children)[0]->getindices());
+  EXPECT_EQ(indices->size(), 2);
+  EXPECT_EQ((*indices)[0], 0);
+  EXPECT_EQ((*indices)[1], 1);
+}
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
