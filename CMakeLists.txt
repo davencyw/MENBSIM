@@ -59,9 +59,11 @@ file (GLOB SOURCES
 		src/menbsim.cc
 		src/naivesolver.cc
 		src/multipolesolver.cc
+		src/octree/octree.cc
 )
 
 file (GLOB TESTSOURCES
+		src/octree/octree.cc
 		tests/test_octree.cc
 )
 

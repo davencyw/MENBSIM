@@ -33,52 +33,13 @@ class Octreenode {
 
   const std::array<Octreenode*, 8>* getchildren() const { return &_children; }
   const Octreenode* getchildren(bool t) const { return _children[0]; }
-
   const std::vector<unsigned int>* getindices() const {
     return &_indexinposarray;
   }
 
   const unsigned int addpoint(const unsigned int indexinposarray,
                               const precision_t x, const precision_t y,
-                              const precision_t z) {
-    // if root or not a leaf, propagate down
-    if (!_leaf) {
-      if (!_root) {
-        _indexinposarray.push_back(indexinposarray);
-      }
-      const unsigned int childindex(getchildindex(x, y, z, _midpoint));
-      _children[childindex]->addpoint(indexinposarray, x, y, z);
-      return childindex;
-    }
-
-    // if leaf
-    if (_leaf) {
-      _indexinposarray.push_back(indexinposarray);
-      // leaf full
-      if (_indexinposarray.size() > _leafsize) {
-        std::cout << "splitted\n";
-        assert(_indexinposarray.size() == _leafsize + 1);
-        // set to no leaf
-        _leaf = false;
-        // create children
-        for (unsigned child_i = 0; child_i < 8; ++child_i) {
-          // TODO(dave): compute midpoint for child with _halfwidth
-          Eigen::Vector3d midpoint(0, 0, 0);
-          _children[child_i] = new Octreenode(midpoint, _leafsize);
-        }
-        // TODO(dave): split all containing points and propagate them down
-        for (unsigned point_i = 0; point_i < 9; ++point_i) {
-          const unsigned int point_indexinposarray(_indexinposarray[point_i]);
-          // TODO(dave): Get coordinates from posarrays
-          const precision_t x(0);
-          const precision_t y(0);
-          const precision_t z(0);
-          const unsigned int childindex(getchildindex(x, y, z, _midpoint));
-          _children[childindex]->addpoint(indexinposarray, x, y, z);
-        }
-      }
-    }
-  };
+                              const precision_t z);
 
   bool isleaf() { return _leaf; }
   bool isroot() { return _root; }
