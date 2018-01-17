@@ -41,12 +41,7 @@ TEST(OctreeTest, OneLevel) {
     EXPECT_EQ((*indices)[0], child_i);
   }
 
-  // for (unsigned child_i = 0; child_i < 8; ++child_i) {
-  //   auto ptr = (children + child_i)->getchildren();
-  //   for (unsigned child_j = 0; child_j < 8; ++child_j) {
-  //     EXPECT_EQ(NULL, ptr + child_j);
-  //   }
-  // }
+  // TODO(dave): nullpointer test for uninitialized children
 }
 
 TEST(OctreeTest, Twolevels) {}

@@ -1,3 +1,16 @@
+/*__DECLARATION__
+ *
+ *
+ *      MENBSIM
+ *      N-Body Simulation of a elliptic galaxy using multipole expansions.
+ *      This project is done in the lecture of computational astrophysics
+ *      in 2017 at University of Zurich (UZH).
+ *
+ *      author:
+ *      david schmidig         [     david@davencyw.net   ]
+ *      ETH Zurich             [ davschmi@student.ethz.ch ]
+ *      DAVENCYW CODE          [        davencyw.net      ]
+ */
 #ifndef __OCTREENODE_HH__
 #define __OCTREENODE_HH__
 
@@ -12,22 +25,38 @@
 
 namespace oct {
 
-// TODO(dave): Remove indicesvector on each level and only store on leaf level
+struct Treeinfo {
+  Treeinfo(const array_t* xpos, const array_t* ypos, const array_t* zpos,
+           const unsigned int leafsize)
+      : xpos(xpos), ypos(ypos), zpos(zpos), leafsize(leafsize) {}
+  const array_t* xpos;
+  const array_t* ypos;
+  const array_t* zpos;
+  const unsigned int leafsize;
+};
+
+// TODO(dave): remove indicesvector on each level and only store on leaf level
+// TODO(dave): descructor for children
+
+static const precision_t splitterx[] = {-1, -1, -1, -1, 1, 1, 1, 1};
+static const precision_t splittery[] = {-1, -1, 1, 1, -1, -1, 1, 1};
+static const precision_t splitterz[] = {-1, 1, -1, 1, -1, 1, -1, 1};
 
 class Octreenode {
  public:
-  Octreenode(Eigen::Vector3d midpoint, unsigned int leafsize)
-      : _midpoint(midpoint), _leafsize(leafsize) {}
-  Octreenode(Eigen::Vector3d midpoint, unsigned int leafsize, bool root)
-      : _midpoint(midpoint), _leafsize(leafsize), _root(root) {
+  Octreenode(Eigen::Vector3d midpoint, precision_t halfwidth,
+             Treeinfo* treeinfo)
+      : _midpoint(midpoint), _halfwidth(halfwidth), _treeinfo(treeinfo) {}
+  Octreenode(Eigen::Vector3d midpoint, bool root, precision_t halfwidth,
+             Treeinfo* treeinfo)
+      : _midpoint(midpoint),
+        _root(root),
+        _halfwidth(halfwidth),
+        _treeinfo(treeinfo) {
     if (_root) {
       _leaf = false;
       // create children first
-      for (unsigned child_i = 0; child_i < 8; ++child_i) {
-        // TODO(dave): compute midpoint for child with _halfwidth
-        Eigen::Vector3d midpoint(0, 0, 0);
-        _children[child_i] = new Octreenode(midpoint, _leafsize);
-      }
+      createchildren();
     }
   }
 
@@ -47,6 +76,8 @@ class Octreenode {
   void setleaf(bool leaf) { _leaf = leaf; }
 
  private:
+  void splitleaf();
+  void createchildren();
   inline const unsigned int getchildindex(const precision_t x,
                                           const precision_t y,
                                           const precision_t z,
@@ -76,7 +107,8 @@ class Octreenode {
 
   bool _leaf = true;
   bool _root = false;
-  unsigned int _leafsize = 8;
+
+  Treeinfo* _treeinfo;
 };
 
 }  // oct

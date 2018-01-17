@@ -51,19 +51,23 @@ include_directories(ext)
 
 
 ##DIR
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dll)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
+
+file(GLOB OCTREESOURCES
+		src/octree/octreenode.cc
+)
 
 file (GLOB SOURCES
 		src/main.cc
 		src/menbsim.cc
 		src/naivesolver.cc
 		src/multipolesolver.cc
-		src/octree/octree.cc
 )
 
 file (GLOB TESTSOURCES
-		src/octree/octree.cc
 		tests/test_octree.cc
 )
 
@@ -73,7 +77,10 @@ file (GLOB TESTSOURCES
 ##LIBRARIES & EXECUTABLES
 ##
 
-#add_executable (menbsim ${SOURCES})
+add_library(octree ${OCTREESOURCES})
+
+add_executable (menbsim ${SOURCES})
+target_link_libraries(menbsim octree)
 
 add_executable (runtests ${TESTSOURCES})
-target_link_libraries(runtests ${GTEST_LIBRARIES} pthread)
+target_link_libraries(runtests ${GTEST_LIBRARIES} pthread octree)
