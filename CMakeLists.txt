@@ -71,7 +71,7 @@ file (GLOB TESTSOURCES
 ##LIBRARIES & EXECUTABLES
 ##
 
-add_executable (menbsim ${SOURCES})
+#add_executable (menbsim ${SOURCES})
 
 add_executable (runtests ${TESTSOURCES})
 target_link_libraries(runtests ${GTEST_LIBRARIES} pthread)

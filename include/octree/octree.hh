@@ -19,6 +19,7 @@
 
 #include <array>
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 #include <eigen3/Eigen/Dense>
@@ -42,16 +43,8 @@ class Octree {
         _leafsize(leafsize) {}
 
   void init() {
-    // TODO(dave): insert and split tree if necessary
-    precision_t xorigin((_extent.x.second - _extent.x.first) / 2.0);
-    precision_t yorigin((_extent.y.second - _extent.y.first) / 2.0);
-    precision_t zorigin((_extent.z.second - _extent.z.first) / 2.0);
-
-    _origin = Eigen::Vector3d(xorigin, yorigin, zorigin);
-
-    _root = new Octreenode(_origin);
-    _root->setroot(true);
-    _root->setleaf(false);
+    _origin = getmidpoint();
+    _root = new Octreenode(_origin, _leafsize, true);
 
     const unsigned int numpoints(_xpos.size());
 
@@ -72,6 +65,13 @@ class Octree {
   const array_t& _zpos;
 
  private:
+  Eigen::Vector3d getmidpoint() {
+    precision_t xorigin((_extent.x.second + _extent.x.first) / 2.0);
+    precision_t yorigin((_extent.y.second + _extent.y.first) / 2.0);
+    precision_t zorigin((_extent.z.second + _extent.z.first) / 2.0);
+    return Eigen::Vector3d(xorigin, yorigin, zorigin);
+  }
+
   Eigen::Vector3d _origin;
   const Extent _extent;
 
