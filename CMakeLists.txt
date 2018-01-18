@@ -79,8 +79,8 @@ file(GLOB OCTREESOURCES
 file (GLOB SOURCES
 		src/main.cc
 		src/menbsim.cc
-		src/naivesolver.cc
-		src/multipolesolver.cc
+		src/solver/naivesolver.cc
+		src/solver/multipolesolver.cc
 )
 
 file (GLOB TESTSOURCES

@@ -85,24 +85,11 @@ class Octreenode {
                                           const Eigen::Vector3d& midpoint) {
     unsigned int index(0);
     // x axis
-    if (x > midpoint(0)) {
-      index |= (1u);
-    }
+    if (x > midpoint(0)) index |= (1u);
     // y axis
-    if (y > midpoint(1)) {
-      index |= (1u << 2);
-    }
+    if (y > midpoint(1)) index |= (1u << 2);
     // z axis
-    if (z < midpoint(2)) {
-      index |= (1u << 1);
-    }
-
-    /*DEBUG
-    std::cout << "mid: \n"
-              << midpoint << "\n"
-              << x << " : " << y << " : " << z << "\n"
-              << "ci: " << index << "\n\n";  //*/
-
+    if (z < midpoint(2)) index |= (1u << 1);
     return index;
   }
 

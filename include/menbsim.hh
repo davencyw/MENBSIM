@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -14,10 +14,10 @@
 #ifndef __MENBSIM_HH__
 #define __MENBSIM_HH__
 
-#include "forcesolver.hh"
 #include "global.hh"
 #include "io.hh"
 #include "simenv.hh"
+#include "solver/forcesolver.hh"
 
 namespace Menbsim {
 
@@ -86,6 +86,6 @@ class Menbsim {
   unsigned int _step_i = 1;
 };
 
-}  // namespace menbsim
+}  // namespace Menbsim
 
 #endif  //__MENBSIM_HH__
