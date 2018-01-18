@@ -44,7 +44,6 @@ class Menbsim {
   //    2 - terminal output long
   bool verifyinputdensity(int output);
 
-  void step();
   void steps(int);
 
   Extent getextent();
@@ -59,6 +58,8 @@ class Menbsim {
   }
 
  private:
+  void step();
+
   precision_t gettimestep();
   void writeoutput();
 

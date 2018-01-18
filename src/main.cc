@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include "benchdec.hh"
 #include "cmdparser.hh"
 #include "menbsim.hh"
 #include "simenv.hh"
@@ -37,15 +38,31 @@ int main(int argc, char const *argv[]) {
   omp_set_num_threads(simenv._nthreads);
   omp_set_dynamic(simenv._scheduling);
 
+  // initialize benchstructure
+  CCPP::BENCH::settitle("menbsim");
+  // CCPP::BENCH::setinfo("");
+
+  CCPP::BENCH::reg("initialization");
+  CCPP::BENCH::reg("steps");
+  CCPP::BENCH::regchild("solver", B_STEP);
+  CCPP::BENCH::regchild("update", B_STEP);
+
   // start main program
   // TODO(dave): add solver switch from simenv
   Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
+
+  CCPP::BENCH::start(B_INIT);
   sim.initialize(Menbsim::NOVERIFICATION);
+  CCPP::BENCH::stop(B_INIT);
 
+  CCPP::BENCH::start(B_STEP);
   sim.steps(10);
+  CCPP::BENCH::stop(B_STEP);
 
-  std::cout << "\n\n_____________________________________________________\n\n\n"
-            << "finished simulation\n\n\n";
+  std::cout << "\n\n_____________________________________________________\n\n"
+            << "finished simulation\n"
+            << "\n\n\n";
+  CCPP::BENCH::summarize();
 
   return 0;
 }

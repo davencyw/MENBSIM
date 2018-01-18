@@ -22,6 +22,8 @@ message("___________________")
 message("___________________")
 
 
+add_definitions(-DCCPP_BENCH)
+
 ##___________________________
 ##
 ##FLAGS
@@ -70,6 +72,9 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dll)
 SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
+file(GLOB BENCHSOURCES
+		ext/bench/bench.cpp
+)
 
 file(GLOB OCTREESOURCES
 		src/octree/octreenode.cc
@@ -94,9 +99,10 @@ file (GLOB TESTSOURCES
 ##
 
 add_library(octree ${OCTREESOURCES})
+add_library(bench ${BENCHSOURCES})
 
 add_executable (menbsim ${SOURCES})
-target_link_libraries(menbsim octree)
+target_link_libraries(menbsim octree bench)
 
 add_executable (runtests ${TESTSOURCES})
 target_link_libraries(runtests ${GTEST_LIBRARIES} pthread octree)

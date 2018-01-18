@@ -1,4 +1,6 @@
 #include "menbsim.hh"
+
+#include "benchdec.hh"
 #include "io.hh"
 
 #include <algorithm>
@@ -92,10 +94,13 @@ void Menbsim::step() {
   Extent extent = getextent();
 
   // compute force
+  CCPP::BENCH::start(B_SOLVER);
   _solver->solve(_numparticles, *_xposition, *_yposition, *_zposition, *_masses,
                  _forcex, _forcey, _forcez, _softeningparam, extent);
+  CCPP::BENCH::stop(B_SOLVER);
 
   // // update particle velocity
+  CCPP::BENCH::start(B_UPDATE);
   *_xvelocity += _forcex / *_masses * _deltat;
   *_yvelocity += _forcey / *_masses * _deltat;
   *_zvelocity += _forcez / *_masses * _deltat;
@@ -104,6 +109,7 @@ void Menbsim::step() {
   *_xposition += *_xvelocity * _deltat;
   *_yposition += *_yvelocity * _deltat;
   *_zposition += *_zvelocity * _deltat;
+  CCPP::BENCH::stop(B_UPDATE);
 
   writeoutput();
 }

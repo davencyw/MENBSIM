@@ -2,7 +2,7 @@
 ###################
 data/
 build/
-ext/
+#ext/
 
 # Compiled source #
 ###################
@@ -51,6 +51,6 @@ Thumbs.db
 *.snm
 *.nav
 
-# journal / db files # 
+# journal / db files #
 ######################
 *.db*
