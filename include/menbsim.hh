@@ -21,14 +21,13 @@
 
 namespace Menbsim {
 
-enum class FORCESOLVERTYPE { NAIVE, MULTIPOLE };
+enum FORCESOLVERTYPE { NAIVE, MULTIPOLE };
 enum VERIFICATION { NOVERIFICATION, VERIFYDENSITY };
 
 class Menbsim {
  public:
-  Menbsim(SimEnv simenv) : _simenv(simenv){};
-  Menbsim(SimEnv simenv, FORCESOLVERTYPE type) : _simenv(simenv) {
-    switchsolver(type);
+  Menbsim(SimEnv simenv) : _simenv(simenv) {
+    switchsolver(simenv._solvertype);
   };
 
   // Initialize data and do verification if wanted
@@ -48,7 +47,7 @@ class Menbsim {
 
   Extent getextent();
 
-  void switchsolver(FORCESOLVERTYPE type) {
+  void switchsolver(int type) {
     switch (type) {
       case FORCESOLVERTYPE::MULTIPOLE: {
         _solver = new Multipolesolver();

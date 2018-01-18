@@ -49,7 +49,7 @@ int main(int argc, char const *argv[]) {
 
   // start main program
   // TODO(dave): add solver switch from simenv
-  Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
+  Menbsim::Menbsim sim(simenv);
 
   CCPP::BENCH::start(B_INIT);
   sim.initialize(Menbsim::NOVERIFICATION);

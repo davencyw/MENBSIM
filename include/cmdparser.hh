@@ -14,12 +14,13 @@
 #ifndef __CMDPARSER_HH__
 #define __CMDPARSER_HH__
 
+#include "global.hh"
+#include "menbsim.hh"
+#include "simenv.hh"
+
 #include <cstdlib>
 #include <string>
 #include "boost/program_options.hpp"
-
-#include "global.hh"
-#include "simenv.hh"
 
 void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   // set default simenv
@@ -28,6 +29,7 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   simenv._cuda = __P_DEF_CUDA;
   simenv._outfolder = "";
   simenv._nooutput = false;
+  simenv._solvertype = Menbsim::MULTIPOLE;
 
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;
