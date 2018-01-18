@@ -73,6 +73,7 @@ SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 file(GLOB OCTREESOURCES
 		src/octree/octreenode.cc
+		src/octree/octree.cc
 )
 
 file (GLOB SOURCES
