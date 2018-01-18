@@ -46,9 +46,10 @@ int main(int argc, char const *argv[]) {
   CCPP::BENCH::reg("steps");
   CCPP::BENCH::regchild("solver", B_STEP);
   CCPP::BENCH::regchild("update", B_STEP);
+  CCPP::BENCH::regchild("treegen", B_SOLVER);
+  CCPP::BENCH::regchild("multipole", B_SOLVER);
 
   // start main program
-  // TODO(dave): add solver switch from simenv
   Menbsim::Menbsim sim(simenv);
 
   CCPP::BENCH::start(B_INIT);
@@ -62,6 +63,7 @@ int main(int argc, char const *argv[]) {
   std::cout << "\n\n_____________________________________________________\n\n"
             << "finished simulation\n"
             << "\n\n\n";
+
   CCPP::BENCH::summarize();
 
   return 0;

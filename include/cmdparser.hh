@@ -34,26 +34,21 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;
   po::options_description desc("Parameters");
-  desc.add_options()("help", "Print help messages")
-      //(",t", po::value<double>(&(simenv._dt))->required() ,"timestep of
-      // simulation")
-      ("dt,d", po::value<double>(&(simenv._dt)), "force timestep [optional]")(
-          "numsteps", po::value<int>(&(simenv._nsteps))->required(),
-          "number of timesteps")(
-          "softening", po::value<double>(&(simenv._softeningparam))->required(),
-          "softening of potential")("solvertype,t",
-                                    po::value<int>(&(simenv._solvertype)),
-                                    "type of solver")(
-          "input,i",
-          po::value<std::string>(&(simenv._inputfilepath))->required(),
-          "input folder")(
-          "outfolder,o", po::value<std::string>(&(simenv._outfolder)),
-          "output folder [optional]")("nooutput", "no fileoutput")(
-          "nthreads,n", po::value<int>(&(simenv._nthreads)),
-          "number of threads [optional]")("schedule,s",
-                                          po::value<int>(&(simenv._scheduling)),
-                                          "omp scheduling [optional]")(
-          "cuda", "enable cuda support [optional]");
+  desc.add_options()("help", "Print help messages")(
+      "dt,d", po::value<double>(&(simenv._dt)), "force timestep [optional]")(
+      "numsteps", po::value<int>(&(simenv._nsteps))->required(),
+      "number of timesteps")(
+      "softening", po::value<double>(&(simenv._softeningparam))->required(),
+      "softening of potential")(
+      "solvertype,t", po::value<int>(&(simenv._solvertype)), "type of solver")(
+      "input,i", po::value<std::string>(&(simenv._inputfilepath))->required(),
+      "input folder")("outfolder,o",
+                      po::value<std::string>(&(simenv._outfolder)),
+                      "output folder [optional]")("nooutput", "no fileoutput")(
+      "nthreads,n", po::value<int>(&(simenv._nthreads)),
+      "number of threads [optional]")(
+      "schedule,s", po::value<int>(&(simenv._scheduling)),
+      "omp scheduling [optional]")("cuda", "enable cuda support [optional]");
 
   po::variables_map vm;
   try {
