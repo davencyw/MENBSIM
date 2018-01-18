@@ -15,10 +15,10 @@ void Multipolesolver::solve(const unsigned int numparticles,
     // TODO(dave): go through all highest possible levels of octree
   }
 };
-
+// TODO(dave): make parameter leafsize nonstatic
 void Multipolesolver::createTree(const unsigned int numparticles,
                                  const array_t& xpos, const array_t& ypos,
                                  const array_t& zpos, const Extent extent) {
-  _octree = new oct::Octree(extent, xpos, ypos, zpos, 8);
+  _octree = new oct::Octree(extent, xpos, ypos, zpos, 10);
   _octree->init();
 }

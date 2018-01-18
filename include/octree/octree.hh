@@ -29,6 +29,9 @@ namespace oct {
 
 // TODO(dave): write destructor
 // TODO(dave): use smart pointers
+// TODO(dave): add statistics for tree generation
+// TODO(dave): add node indices for tree
+// TODO(dave): add data object on treenode
 
 class Octree {
  public:
@@ -57,6 +60,6 @@ class Octree {
 
   Octreenode* _root;
 };
-}  // oct
+}  // namespace oct
 
 #endif  // __OCTREE_HH__

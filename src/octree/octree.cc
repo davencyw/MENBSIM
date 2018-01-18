@@ -20,6 +20,10 @@ void Octree::init() {
 
   _root = new Octreenode(_origin, true, halfwidth, _treeinfo);
 
+  std::cout << "Octree:\nhalfwidth: " << halfwidth << "\n"
+            << "origin:\n"
+            << _origin << "\n";
+
   const unsigned int numpoints(_xpos.size());
 
   // insert each point into tree
@@ -29,6 +33,7 @@ void Octree::init() {
     const precision_t z(_zpos(point_i));
 
     _root->addpoint(point_i, x, y, z);
+    /*DEBUG*/ std::cout << "point " << point_i << '\n';
   }
 }
 
@@ -49,4 +54,4 @@ std::tuple<Eigen::Vector3d, precision_t> Octree::getgeometry() {
   return geometry_tuple;
 }
 
-}  // oct
+}  // namespace oct

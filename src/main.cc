@@ -41,7 +41,7 @@ int main(int argc, char const *argv[]) {
   Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
   sim.initialize(Menbsim::NOVERIFICATION);
 
-  sim.steps(3);
+  sim.steps(1);
 
   std::cout << "\n\n_____________________________________________________\n\n\n"
             << "finished simulation\n\n\n";

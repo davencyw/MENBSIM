@@ -85,7 +85,7 @@ void Menbsim::step() {
   Extent extent = getextent();
 
   // compute force
-  _solver->solve(_numparticles, *_xvelocity, *_yvelocity, *_zvelocity, *_masses,
+  _solver->solve(_numparticles, *_xposition, *_yposition, *_zposition, *_masses,
                  _forcex, _forcey, _forcez, _softeningparam, extent);
 
   // // update particle velocity
@@ -104,30 +104,25 @@ void Menbsim::step() {
 Extent Menbsim::getextent() {
   // get extent of all particles in all dimensions
   Extent extent;
+  const unsigned int numpoints(_xposition->size());
 
   const precision_t xmin(*__gnu_parallel::min_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
-
+      _xposition->data(), _xposition->data() + numpoints));
   const precision_t xmax(*__gnu_parallel::max_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
-
+      _xposition->data(), _xposition->data() + numpoints));
   const precision_t ymin(*__gnu_parallel::min_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
-
+      _yposition->data(), _yposition->data() + numpoints));
   const precision_t ymax(*__gnu_parallel::max_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
-
+      _yposition->data(), _yposition->data() + numpoints));
   const precision_t zmin(*__gnu_parallel::min_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
-
+      _zposition->data(), _zposition->data() + numpoints));
   const precision_t zmax(*__gnu_parallel::max_element(
-      _xposition->data(), _xposition->data() + _xposition->size()));
+      _zposition->data(), _zposition->data() + numpoints));
 
   extent.x = std::make_pair(xmin, xmax);
   extent.y = std::make_pair(ymin, ymax);
   extent.z = std::make_pair(zmin, zmax);
-
   return extent;
 }
 
-}  // namespace menbsim
+}  // namespace Menbsim
