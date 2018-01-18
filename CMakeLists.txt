@@ -13,7 +13,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE "DEBUG" FORCE)
 endif ()
 
-SET (CMAKE_BUILD_TYPE "Debug")
+SET (CMAKE_BUILD_TYPE "DEBUG")
 
 message("mode")
 message("${CMAKE_BUILD_TYPE}")

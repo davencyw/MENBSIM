@@ -6,12 +6,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <parallel/algorithm>
+#include <string>
 
 namespace Menbsim {
 
 void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
-  _inputdata = Reader::readfromfile(_simenv._inputfilepath);
+  _inputdata = io::Reader::readfromfile(_simenv._inputfilepath);
   _numparticles = _inputdata.numparticles;
 
   // sanitize input
@@ -77,6 +78,12 @@ void Menbsim::step() {
 
   std::cout << '\xd' << "step: " << _step_i++ << " ..." << std::flush;
 
+  // get timestep
+  _deltat = _simenv._dt;
+  if (!_deltat) {
+    _deltat = gettimestep();
+  }
+
   // reset forces
   _forcex.setZero();
   _forcey.setZero();
@@ -98,7 +105,12 @@ void Menbsim::step() {
   *_yposition += *_yvelocity * _deltat;
   *_zposition += *_zvelocity * _deltat;
 
-  // TODO(dave): write to file
+  // TODO(dave): specify step to write
+  // write to file
+  std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
+                       std::to_string(_step_i) + ".posdat");
+  std::string fullfilepath(_simenv._outfolder + filename);
+  io::Writer::writetofile(fullfilepath, *_xposition, *_yposition, *_zposition);
 }
 
 Extent Menbsim::getextent() {
@@ -123,6 +135,11 @@ Extent Menbsim::getextent() {
   extent.y = std::make_pair(ymin, ymax);
   extent.z = std::make_pair(zmin, zmax);
   return extent;
+}
+
+precision_t Menbsim::gettimestep() {
+  // TODO(dave): compute biggest possible timestepsize
+  return 0.001;
 }
 
 }  // namespace Menbsim

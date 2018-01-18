@@ -30,7 +30,7 @@ const int Octreenode::addpoint(const unsigned int indexinposarray,
 }
 
 void Octreenode::splitleaf() {
-  /*DEBUG*/ std::cout << "splitted\n";
+  //*DEBUG*/ std::cout << "splitted\n";
   assert(_indexinposarray.size() == _treeinfo->leafsize + 1);
   // set to no leaf
   _leaf = false;

@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -21,7 +21,7 @@ struct SimEnv {
   //____________________
 
   // timestep
-  double _dt;
+  double _dt = 0;
   // number of steps
   int _nsteps;
   // softening parameter for potential
@@ -29,6 +29,7 @@ struct SimEnv {
 
   // computing environment
   //____________________
+  int _solvertype;
 
   // number of threads
   int _nthreads;
@@ -41,6 +42,7 @@ struct SimEnv {
   //____________________
   std::string _outfolder;
   std::string _inputfilepath;
+  unsigned int _runhash;
 };
 
 #endif  //__SIMENV_HH__

@@ -38,10 +38,11 @@ int main(int argc, char const *argv[]) {
   omp_set_dynamic(simenv._scheduling);
 
   // start main program
+  // TODO(dave): add solver switch from simenv
   Menbsim::Menbsim sim(simenv, Menbsim::FORCESOLVERTYPE::MULTIPOLE);
   sim.initialize(Menbsim::NOVERIFICATION);
 
-  sim.steps(1);
+  sim.steps(10);
 
   std::cout << "\n\n_____________________________________________________\n\n\n"
             << "finished simulation\n\n\n";

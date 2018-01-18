@@ -1,12 +1,11 @@
 #!/bin/bash
 
 #variables and parameters
-OUTFOLDER="../data/out/"
+OUTFOLDER="../data/out"
 INFOLDER="../data/in/data.ascii"
 
 SOFTENING=0.1
 NUMSTEPS=3
-TIMESTEP=1
 
 
 #___________________________
@@ -15,6 +14,6 @@ TIMESTEP=1
 clear
 ../build/bin/menbsim \
 						--input $INFOLDER \
-						-d $TIMESTEP \
+						--outfolder $OUTFOLDER \
 						--numsteps $NUMSTEPS \
 						--softening $SOFTENING

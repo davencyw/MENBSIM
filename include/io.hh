@@ -21,6 +21,8 @@
 #include <tuple>
 #include <vector>
 
+namespace io {
+
 class Reader {
  public:
   static Datastruct readfromfile(std::string fullfilepath) {
@@ -90,5 +92,6 @@ class Writer {
     filestream.close();
   }
 };
+}  // namespace io
 
 #endif  //__INPUTREADER_HH__

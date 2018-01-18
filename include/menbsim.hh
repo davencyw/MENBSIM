@@ -59,6 +59,8 @@ class Menbsim {
   }
 
  private:
+  precision_t gettimestep();
+
   bool _initialized = false;
 
   precision_t _deltat;

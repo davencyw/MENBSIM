@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -26,6 +26,7 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   simenv._nthreads = __P_DEF_NTHREADS;
   simenv._scheduling = __P_DEF_SCHEDULE;
   simenv._cuda = __P_DEF_CUDA;
+  simenv._outfolder = "";
 
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;
@@ -33,16 +34,18 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   desc.add_options()("help", "Print help messages")
       //(",t", po::value<double>(&(simenv._dt))->required() ,"timestep of
       // simulation")
-      ("dt,d", po::value<double>(&(simenv._dt))->required(), "timestep")(
+      ("dt,d", po::value<double>(&(simenv._dt)), "force timestep [optional]")(
           "numsteps", po::value<int>(&(simenv._nsteps))->required(),
           "number of timesteps")(
           "softening", po::value<double>(&(simenv._softeningparam))->required(),
-          "softening of potential")(
+          "softening of potential")("solvertype,t",
+                                    po::value<int>(&(simenv._solvertype)),
+                                    "type of solver")(
           "input,i",
           po::value<std::string>(&(simenv._inputfilepath))->required(),
-          "output folder")("outfolder,o",
-                           po::value<std::string>(&(simenv._outfolder)),
-                           "output folder [optional]")(
+          "input folder")("outfolder,o",
+                          po::value<std::string>(&(simenv._outfolder)),
+                          "output folder [optional]")(
           "nthreads,n", po::value<int>(&(simenv._nthreads)),
           "number of threads [optional]")("schedule,s",
                                           po::value<int>(&(simenv._scheduling)),
@@ -51,10 +54,9 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
 
   po::variables_map vm;
   try {
-    po::store(po::parse_command_line(argc, argv, desc), vm);  // can throw
+    // can throw
+    po::store(po::parse_command_line(argc, argv, desc), vm);
 
-    /** --help option
-     */
     if (vm.count("help")) {
       std::cout << __P_NAME << std::endl << desc << std::endl;
       exit(0);
@@ -69,6 +71,16 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
     std::cerr << desc << std::endl;
     exit(1);
   }
+
+  // folder sanitization
+  if (simenv._outfolder.back() != '/' && !simenv._outfolder.empty()) {
+    simenv._outfolder.append("/");
+  }
+
+  // runhash
+  simenv._runhash = std::time(0);
+
+  // TODO(dave): write param summary
 
   // END BOOST PROGRAM OPTIONS
 };
