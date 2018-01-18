@@ -22,7 +22,6 @@ message("___________________")
 message("___________________")
 
 
-
 ##___________________________
 ##
 ##FLAGS
@@ -30,7 +29,7 @@ message("___________________")
 
 SET (RELEASE_FLAGS " -std=c++11 -O3 -march=native  -mtune=native -mavx2 -mavx -msse -ftree-vectorize")
 
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g")
 
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
   SET (RELEASE_FLAGS "${RELEASE_FLAGS} ")

@@ -50,7 +50,7 @@ void Octreenode::splitleaf() {
 }
 
 void Octreenode::createchildren() {
-  //*DEBUG*/std::cout << "MIDPOINT\t:\n " << _midpoint << "\n\n";
+  //*DEBUG*/ std::cout << "MIDPOINT\n " << _midpoint << "\n\n";
   //*DEBUG*/std::cout << "hw:\t" << _halfwidth << "\n";
   // an octreenode has always 8 children
   for (unsigned child_i = 0; child_i < 8; ++child_i) {
@@ -60,8 +60,8 @@ void Octreenode::createchildren() {
                              splittery[child_i] * quarterwidth,
                              splitterz[child_i] * quarterwidth);
     midpoint += _midpoint;
-    //*DEBUG*/std::cout << "mids: \t\n" << midpoint << "\n";
     _children[child_i] = new Octreenode(midpoint, quarterwidth, _treeinfo);
+    //*DEBUG*/ std::cout << "i: " << child_i << "\n" << midpoint << "\n";
   }
   //*DEBUG*/std::cout << "_______________________________________\n";
 }
