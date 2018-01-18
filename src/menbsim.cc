@@ -105,12 +105,7 @@ void Menbsim::step() {
   *_yposition += *_yvelocity * _deltat;
   *_zposition += *_zvelocity * _deltat;
 
-  // TODO(dave): specify step to write
-  // write to file
-  std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
-                       std::to_string(_step_i) + ".posdat");
-  std::string fullfilepath(_simenv._outfolder + filename);
-  io::Writer::writetofile(fullfilepath, *_xposition, *_yposition, *_zposition);
+  writeoutput();
 }
 
 Extent Menbsim::getextent() {
@@ -140,6 +135,18 @@ Extent Menbsim::getextent() {
 precision_t Menbsim::gettimestep() {
   // TODO(dave): compute biggest possible timestepsize
   return 0.001;
+}
+
+void Menbsim::writeoutput() {
+  if (_simenv._nooutput) {
+    return;
+  }
+  // TODO(dave): specify step to write
+  // write to file
+  std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
+                       std::to_string(_step_i) + ".posdat");
+  std::string fullfilepath(_simenv._outfolder + filename);
+  io::Writer::writetofile(fullfilepath, *_xposition, *_yposition, *_zposition);
 }
 
 }  // namespace Menbsim

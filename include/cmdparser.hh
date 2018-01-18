@@ -27,6 +27,7 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   simenv._scheduling = __P_DEF_SCHEDULE;
   simenv._cuda = __P_DEF_CUDA;
   simenv._outfolder = "";
+  simenv._nooutput = false;
 
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;
@@ -43,9 +44,9 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
                                     "type of solver")(
           "input,i",
           po::value<std::string>(&(simenv._inputfilepath))->required(),
-          "input folder")("outfolder,o",
-                          po::value<std::string>(&(simenv._outfolder)),
-                          "output folder [optional]")(
+          "input folder")(
+          "outfolder,o", po::value<std::string>(&(simenv._outfolder)),
+          "output folder [optional]")("nooutput", "no fileoutput")(
           "nthreads,n", po::value<int>(&(simenv._nthreads)),
           "number of threads [optional]")("schedule,s",
                                           po::value<int>(&(simenv._scheduling)),
@@ -63,6 +64,7 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
     }
 
     if (vm.count("cuda")) simenv._cuda = true;
+    if (vm.count("nooutput")) simenv._nooutput = true;
 
     po::notify(vm);  // throws on error, so do after help in case
                      // there are any problems

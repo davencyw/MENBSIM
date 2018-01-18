@@ -60,6 +60,7 @@ class Menbsim {
 
  private:
   precision_t gettimestep();
+  void writeoutput();
 
   bool _initialized = false;
 

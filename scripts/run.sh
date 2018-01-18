@@ -16,4 +16,5 @@ clear
 						--input $INFOLDER \
 						--outfolder $OUTFOLDER \
 						--numsteps $NUMSTEPS \
-						--softening $SOFTENING
+						--softening $SOFTENING \
+						--nooutput
