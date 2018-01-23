@@ -35,6 +35,8 @@ void Multipolesolver::createTree(const unsigned int numparticles,
   const unsigned int numnodes(_octree->getnumnodes());
   _monopole = array_t(numnodes);
   _quadrapole = array_t(numnodes);
+  _monopole.setZero();
+  _quadrapole.setZero();
 
   // compute multipole expansions
   std::stack<const oct::Octreenode*> nodestack;

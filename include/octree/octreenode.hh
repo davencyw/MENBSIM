@@ -75,7 +75,6 @@ class Octreenode {
 
   bool isleaf() { return _leaf; }
   bool isroot() { return _parent == nullptr; }
-  void setroot(bool root) { _root = root; }
   void setleaf(bool leaf) { _leaf = leaf; }
   unsigned int getdataindex() const { return _dataindex; }
   void setdataindex(unsigned int dataindex) { _dataindex = dataindex; }
@@ -107,7 +106,6 @@ class Octreenode {
   precision_t _halfwidth;
 
   bool _leaf = true;
-  bool _root = false;
 
   Treeinfo* _treeinfo;
 };

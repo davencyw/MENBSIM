@@ -31,7 +31,7 @@ namespace oct {
 // TODO(dave): use smart pointers
 // TODO(dave): add statistics for tree generation
 // TODO(dave): add node indices for tree
-// TODO(dave): add data object on treenode
+// TODO(dave): add data object on treenode (see node indices for tree)
 
 class Octree {
  public:

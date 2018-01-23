@@ -50,9 +50,9 @@ class Menbsim {
   void switchsolver(int type) {
     switch (type) {
       case FORCESOLVERTYPE::MULTIPOLE: {
-        _solver = new Multipolesolver();
+        _solver = new Multipolesolver(_simenv);
       } break;
-      default: { _solver = new Naivesolver; } break;
+      default: { _solver = new Naivesolver(_simenv); } break;
     }
   }
 

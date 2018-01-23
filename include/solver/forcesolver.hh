@@ -14,27 +14,26 @@
 #ifndef __FORCESOLVER_HH__
 #define __FORCESOLVER_HH__
 
-#include <global.hh>
+#include "global.hh"
 #include "octree/octree.hh"
+#include "simenv.hh"
 
 class Forcesolver {
  public:
-  Forcesolver() = default;
+  Forcesolver(SimEnv simenv) : _simenv(simenv){};
   virtual void solve(const unsigned int numparticles, const array_t& xpos,
                      const array_t& ypos, const array_t& zpos,
                      const array_t& masses, array_t& forcex, array_t& forcey,
                      array_t& forcez, const precision_t softening,
                      const Extent extent) = 0;
 
-  void setconfig() {
-    // TODO(dave): write config
-    // leafsize for octree in multipole
-  }
+ private:
+  SimEnv _simenv;
 };
 
 class Naivesolver : public Forcesolver {
  public:
-  Naivesolver() = default;
+  Naivesolver(SimEnv simenv) : Forcesolver(simenv){};
   void solve(const unsigned int numparticles, const array_t& xpos,
              const array_t& ypos, const array_t& zpos, const array_t& masses,
              array_t& forcex, array_t& forcey, array_t& forcez,
@@ -43,7 +42,7 @@ class Naivesolver : public Forcesolver {
 
 class Multipolesolver : public Forcesolver {
  public:
-  Multipolesolver() = default;
+  Multipolesolver(SimEnv simenv) : Forcesolver(simenv){};
   void solve(const unsigned int numparticles, const array_t& xpos,
              const array_t& ypos, const array_t& zpos, const array_t& masses,
              array_t& forcex, array_t& forcey, array_t& forcez,
