@@ -69,8 +69,9 @@ class Octreenode {
     return &_indexinposarray;
   }
 
-  const int addpoint(const unsigned int indexinposarray, const precision_t x,
-                     const precision_t y, const precision_t z);
+  const unsigned int addpoint(const unsigned int indexinposarray,
+                              const precision_t x, const precision_t y,
+                              const precision_t z);
 
   bool isleaf() { return _leaf; }
   bool isroot() { return _parent == nullptr; }
@@ -78,7 +79,7 @@ class Octreenode {
   void setleaf(bool leaf) { _leaf = leaf; }
 
  private:
-  void splitleaf();
+  const unsigned int splitleaf();
   void createchildren();
   inline const unsigned int getchildindex(const precision_t x,
                                           const precision_t y,

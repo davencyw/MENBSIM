@@ -4,38 +4,43 @@
 
 namespace oct {
 
-const int Octreenode::addpoint(const unsigned int indexinposarray,
-                               const precision_t x, const precision_t y,
-                               const precision_t z) {
+const unsigned int Octreenode::addpoint(const unsigned int indexinposarray,
+                                        const precision_t x,
+                                        const precision_t y,
+                                        const precision_t z) {
   // if root or not a leaf, propagate down
   if (!_leaf) {
+    // !root
     if (!(_parent == nullptr)) {
       _indexinposarray.push_back(indexinposarray);
     }
     const unsigned int childindex(getchildindex(x, y, z, _midpoint));
-    _children[childindex]->addpoint(indexinposarray, x, y, z);
-    return childindex;
+    const unsigned int numnewnodes(
+        _children[childindex]->addpoint(indexinposarray, x, y, z));
+    return numnewnodes;
   }
 
-  // if leaf
-  if (_leaf) {
-    _indexinposarray.push_back(indexinposarray);
-    // leaf full
-    if (_indexinposarray.size() > _treeinfo->leafsize) {
-      splitleaf();
-    }
+  // else if leaf
+  _indexinposarray.push_back(indexinposarray);
+  // leaf full
+  if (_indexinposarray.size() > _treeinfo->leafsize) {
+    const unsigned int numnewnodes(splitleaf());
+    // 8 new nodes
+    return 8 + numnewnodes;
   }
-  // TODO(dave): add index where inserted
-  return -1;
+  // 0 new nodes
+  return 0;
 }
 
-void Octreenode::splitleaf() {
+const unsigned int Octreenode::splitleaf() {
   //*DEBUG*/ std::cout << "splitted\n";
   assert(_indexinposarray.size() == _treeinfo->leafsize + 1);
   // set to no leaf
   _leaf = false;
   // create children
   createchildren();
+
+  unsigned int numnewnodes(0);
 
   // split all containing points and propagate them down
   for (unsigned int point_indexinposarray : _indexinposarray) {
@@ -47,8 +52,10 @@ void Octreenode::splitleaf() {
 
     //*DEBUG*/ std::cout << _midpoint << "\n";
     //*DEBUG*/ std::cout << "ci: " << childindex << "\n";
-    _children[childindex]->addpoint(point_indexinposarray, x, y, z);
+    numnewnodes +=
+        _children[childindex]->addpoint(point_indexinposarray, x, y, z);
   }
+  return numnewnodes;
 }
 
 void Octreenode::createchildren() {

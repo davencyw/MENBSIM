@@ -57,6 +57,7 @@ class Octree {
   const Extent _extent;
 
   Treeinfo* _treeinfo;
+  unsigned int _numnodes = 0;
 
   Octreenode* _root;
 };
