@@ -44,6 +44,8 @@ TEST(OctreeTest, OneLevelXYZ) {
       EXPECT_EQ(nullptr, child_child_i);
     }
   }
+
+  EXPECT_EQ(octree.getnumnodes(), 8);
 }
 
 TEST(OctreeTest, TwoLevelsX) {
@@ -82,6 +84,8 @@ TEST(OctreeTest, TwoLevelsX) {
         (*child_children)[1]->getindices();
     EXPECT_EQ(child_indices1->size(), 1);
     EXPECT_EQ((*child_indices1)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
   // two points in the same cube below root, one more split until level two
   // positive x
@@ -113,6 +117,8 @@ TEST(OctreeTest, TwoLevelsX) {
         (*child_children)[1]->getindices();
     EXPECT_EQ(child_indices2->size(), 1);
     EXPECT_EQ((*child_indices2)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
 }
 
@@ -152,6 +158,8 @@ TEST(OctreeTest, TwoLevelsY) {
         (*child_children)[4]->getindices();
     EXPECT_EQ(child_indices1->size(), 1);
     EXPECT_EQ((*child_indices1)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
   // two points in the same cube below root, one more split until level two
   // positive y
@@ -183,6 +191,8 @@ TEST(OctreeTest, TwoLevelsY) {
         (*child_children)[4]->getindices();
     EXPECT_EQ(child_indices2->size(), 1);
     EXPECT_EQ((*child_indices2)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
 }
 
@@ -221,6 +231,8 @@ TEST(OctreeTest, TwoLevelsZ) {
         (*child_children)[0]->getindices();
     EXPECT_EQ(child_indices2->size(), 1);
     EXPECT_EQ((*child_indices2)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
   // two points in the same cube below root, one more split until level two
   // positive z
@@ -252,6 +264,8 @@ TEST(OctreeTest, TwoLevelsZ) {
         (*child_children)[0]->getindices();
     EXPECT_EQ(child_indices2->size(), 1);
     EXPECT_EQ((*child_indices2)[0], 1);
+
+    EXPECT_EQ(octree.getnumnodes(), 16);
   }
 }
 
@@ -278,6 +292,8 @@ TEST(OctreeTest, OnEdge) {
   EXPECT_EQ(indices->size(), 2);
   EXPECT_EQ((*indices)[0], 0);
   EXPECT_EQ((*indices)[1], 1);
+
+  EXPECT_EQ(octree.getnumnodes(), 8);
 }
 
 int main(int argc, char** argv) {
