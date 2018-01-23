@@ -76,16 +76,15 @@ def plot3ddensity(datax, datay, dataz, filepath='', time=0, xmin=0, xmax=0, ymin
     return (xmin, xmax, ymin, ymax, zmin, zmax)
 
 
-def plotnsimdata(filepath):
+def plotsimdata(filepath):
     return
 
 if __name__ == "__main__":
 
     #EXAMPLE PLOTS
-
     datax = np.random.uniform(0, 10000, 5000)
     datay = np.random.uniform(0, 10000, 5000)
     dataz = np.random.uniform(0, 10000, 5000)
 
-    #plot3ddensity(datax=datax, datay=datay, dataz=dataz)
-    plot2ddensity(datax=datax, datay=datay)
+    plot3ddensity(datax=datax, datay=datay, dataz=dataz)
+    #plot2ddensity(datax=datax, datay=datay)

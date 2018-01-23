@@ -9,7 +9,7 @@ const int Octreenode::addpoint(const unsigned int indexinposarray,
                                const precision_t z) {
   // if root or not a leaf, propagate down
   if (!_leaf) {
-    if (!_root) {
+    if (!(_parent == nullptr)) {
       _indexinposarray.push_back(indexinposarray);
     }
     const unsigned int childindex(getchildindex(x, y, z, _midpoint));
@@ -60,7 +60,8 @@ void Octreenode::createchildren() {
                              splittery[child_i] * quarterwidth,
                              splitterz[child_i] * quarterwidth);
     midpoint += _midpoint;
-    _children[child_i] = new Octreenode(midpoint, quarterwidth, _treeinfo);
+    _children[child_i] =
+        new Octreenode(midpoint, this, quarterwidth, _treeinfo);
   }
 }
 

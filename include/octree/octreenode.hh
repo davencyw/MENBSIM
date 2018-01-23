@@ -48,14 +48,15 @@ class Octreenode {
  public:
   Octreenode(Eigen::Vector3d midpoint, precision_t halfwidth,
              Treeinfo* treeinfo)
-      : _midpoint(midpoint), _halfwidth(halfwidth), _treeinfo(treeinfo) {}
-  Octreenode(Eigen::Vector3d midpoint, bool root, precision_t halfwidth,
-             Treeinfo* treeinfo)
-      : _midpoint(midpoint),
+      : Octreenode(midpoint, nullptr, halfwidth, treeinfo) {}
+
+  Octreenode(Eigen::Vector3d midpoint, Octreenode* parent,
+             precision_t halfwidth, Treeinfo* treeinfo)
+      : _parent(parent),
+        _midpoint(midpoint),
         _halfwidth(halfwidth),
-        _root(root),
         _treeinfo(treeinfo) {
-    if (_root) {
+    if (parent == nullptr) {
       // root is never a leaf
       _leaf = false;
       // create children
@@ -72,7 +73,7 @@ class Octreenode {
                      const precision_t y, const precision_t z);
 
   bool isleaf() { return _leaf; }
-  bool isroot() { return _root; }
+  bool isroot() { return _parent == nullptr; }
   void setroot(bool root) { _root = root; }
   void setleaf(bool leaf) { _leaf = leaf; }
 
@@ -93,7 +94,9 @@ class Octreenode {
     return index;
   }
 
+  Octreenode* _parent = nullptr;
   std::array<Octreenode*, 8> _children = {};
+  unsigned int _dataindex;
 
   std::vector<unsigned int> _indexinposarray;
 
@@ -106,6 +109,6 @@ class Octreenode {
   Treeinfo* _treeinfo;
 };
 
-}  // oct
+}  // namespace oct
 
 #endif  // __OCTREENODE_HH__

@@ -26,4 +26,6 @@ void Multipolesolver::createTree(const unsigned int numparticles,
                                  const array_t& zpos, const Extent extent) {
   _octree = new oct::Octree(extent, xpos, ypos, zpos, 10);
   _octree->init();
+
+  // compute multipole expansions, do this in a bfs manner
 }

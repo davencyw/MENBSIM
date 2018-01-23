@@ -18,7 +18,7 @@ void Octree::init() {
 
   const precision_t halfwidth(std::get<1>(geometry_tuple));
 
-  _root = new Octreenode(_origin, true, halfwidth, _treeinfo);
+  _root = new Octreenode(_origin, nullptr, halfwidth, _treeinfo);
 
   const unsigned int numpoints(_xpos.size());
 
