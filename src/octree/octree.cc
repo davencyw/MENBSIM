@@ -6,6 +6,7 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+#include <stack>
 #include <tuple>
 #include <vector>
 
@@ -50,6 +51,38 @@ std::tuple<Eigen::Vector3d, precision_t> Octree::getgeometry() {
   auto geometry_tuple = std::make_tuple(midpoint, width * .5);
 
   return geometry_tuple;
+}
+
+// TODO(dave): rewrite tree to get leafnodes instantly (though its not too
+// slow for affordable treesizes)
+// TODO(dave): rewrite nodeindexing
+std::vector<const Octreenode*> Octree::getleafnodes() {
+  std::vector<const Octreenode*> leafnodes;
+  std::stack<Octreenode*> nodestack;
+  // children of root;
+  for (auto child : (*_root->getchildren())) {
+    nodestack.push(child);
+  }
+
+  // create indices along
+  unsigned int nodeindex(0);
+
+  while (!nodestack.empty()) {
+    Octreenode* currentnode(nodestack.top());
+    nodestack.pop();
+
+    currentnode->setdataindex(nodeindex);
+    ++nodeindex;
+
+    if (currentnode->isleaf()) {
+      leafnodes.push_back(currentnode);
+    } else {
+      for (auto child : (*currentnode->getchildren())) {
+        nodestack.push(child);
+      }
+    }
+  }
+  return leafnodes;
 }
 
 }  // namespace oct

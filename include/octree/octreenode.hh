@@ -73,10 +73,10 @@ class Octreenode {
                               const precision_t x, const precision_t y,
                               const precision_t z);
 
-  bool isleaf() { return _leaf; }
-  bool isroot() { return _parent == nullptr; }
+  const bool isleaf() const { return _leaf; }
+  const bool isroot() const { return _parent == nullptr; }
   void setleaf(bool leaf) { _leaf = leaf; }
-  unsigned int getdataindex() const { return _dataindex; }
+  const unsigned int getdataindex() const { return _dataindex; }
   void setdataindex(unsigned int dataindex) { _dataindex = dataindex; }
 
  private:

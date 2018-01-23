@@ -48,6 +48,8 @@ class Octree {
 
   const unsigned int getnumnodes() { return _numnodes; }
 
+  std::vector<const oct::Octreenode*> getleafnodes();
+
   const array_t& _xpos;
   const array_t& _ypos;
   const array_t& _zpos;

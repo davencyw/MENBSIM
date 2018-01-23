@@ -38,13 +38,12 @@ void Multipolesolver::createTree(const unsigned int numparticles,
   _monopole.setZero();
   _quadrapole.setZero();
 
-  // compute multipole expansions
-  std::stack<const oct::Octreenode*> nodestack;
-  nodestack.push(_octree->getroot());
+  // get leafnodes
+  std::vector<const oct::Octreenode*> leafnodes(_octree->getleafnodes());
 
-  // TODO(dave): do from leaflevels upwards!
-  while (!nodestack.empty()) {
-    const oct::Octreenode* currentnode(nodestack.top());
-    nodestack.pop();
+  // TODO(dave): use openmp to parallelize
+  // compute multipole expansions bottom up
+  for (auto leafnode : leafnodes) {
+    // monopole
   }
 }
