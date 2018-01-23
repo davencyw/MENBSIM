@@ -14,7 +14,7 @@ void Multipolesolver::solve(const unsigned int numparticles,
                             const precision_t softening, const Extent extent) {
   // create tree first
   CCPP::BENCH::start(B_TREEGEN);
-  createTree(numparticles, xpos, ypos, zpos, extent);
+  createTree(numparticles, xpos, ypos, zpos, masses, extent);
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
@@ -27,10 +27,17 @@ void Multipolesolver::solve(const unsigned int numparticles,
 // TODO(dave): make parameter leafsize nonstatic
 void Multipolesolver::createTree(const unsigned int numparticles,
                                  const array_t& xpos, const array_t& ypos,
-                                 const array_t& zpos, const Extent extent) {
+                                 const array_t& zpos, const array_t& masses,
+                                 const Extent extent) {
   _octree = new oct::Octree(extent, xpos, ypos, zpos, 10);
   _octree->init();
 
+  multipoleExpansion(numparticles, xpos, ypos, zpos, masses, extent);
+}
+
+void Multipolesolver::multipoleExpansion(
+    const unsigned int numparticles, const array_t& xpos, const array_t& ypos,
+    const array_t& zpos, const array_t& masses, const Extent extent) {
   // create multipole datacontainer
   const unsigned int numnodes(_octree->getnumnodes());
   _monopole = array_t(numnodes);
@@ -44,6 +51,24 @@ void Multipolesolver::createTree(const unsigned int numparticles,
   // TODO(dave): use openmp to parallelize
   // compute multipole expansions bottom up
   for (auto leafnode : leafnodes) {
-    // monopole
+    const oct::Octreenode* currentnode = leafnode;
+
+    const std::vector<unsigned int>* leafnodeindicesinposarray(
+        leafnode->getindices());
+    const unsigned int leafnodedataindex(leafnode->getdataindex());
+
+    for (unsigned int index : *leafnodeindicesinposarray) {
+      // leafnode monopole
+      _monopole(leafnodedataindex) += masses(index);
+      // TODO(dave): leafnode quadrapole
+    }
+
+    // propagate mono-/quadrapole upwards in tree
+    while (currentnode) {
+      // TODO(dave): monopole
+      // TODO(dave): quadrapole
+
+      currentnode = currentnode->getparent();
+    }
   }
 }

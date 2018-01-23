@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -51,7 +51,10 @@ class Multipolesolver : public Forcesolver {
  private:
   void createTree(const unsigned int numparticles, const array_t& xpos,
                   const array_t& ypos, const array_t& zpos,
-                  const Extent extent);
+                  const array_t& masses, const Extent extent);
+  void multipoleExpansion(const unsigned int numparticles, const array_t& xpos,
+                          const array_t& ypos, const array_t& zpos,
+                          const array_t& masses, const Extent extent);
   oct::Octree* _octree;
   array_t _monopole;
   array_t _quadrapole;

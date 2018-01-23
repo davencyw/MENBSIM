@@ -78,6 +78,7 @@ class Octreenode {
   void setleaf(bool leaf) { _leaf = leaf; }
   const unsigned int getdataindex() const { return _dataindex; }
   void setdataindex(unsigned int dataindex) { _dataindex = dataindex; }
+  const Octreenode* getparent() const { return _parent; }
 
  private:
   const unsigned int splitleaf();
@@ -109,7 +110,6 @@ class Octreenode {
 
   Treeinfo* _treeinfo;
 };
-
 }  // namespace oct
 
 #endif  // __OCTREENODE_HH__
