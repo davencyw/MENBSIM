@@ -19,6 +19,7 @@ void Octree::init() {
   const precision_t halfwidth(std::get<1>(geometry_tuple));
 
   _root = new Octreenode(_origin, nullptr, halfwidth, _treeinfo);
+  _numnodes = 8;
 
   const unsigned int numpoints(_xpos.size());
 
@@ -28,7 +29,8 @@ void Octree::init() {
     const precision_t y(_ypos(point_i));
     const precision_t z(_zpos(point_i));
 
-    _root->addpoint(point_i, x, y, z);
+    const unsigned int numnewnodes(_root->addpoint(point_i, x, y, z));
+    _numnodes += numnewnodes;
     //*DEBUG*/ std::cout << "point " << point_i << '\n';
   }
 }

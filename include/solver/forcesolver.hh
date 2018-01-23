@@ -54,6 +54,8 @@ class Multipolesolver : public Forcesolver {
                   const array_t& ypos, const array_t& zpos,
                   const Extent extent);
   oct::Octree* _octree;
+  array_t _monopole;
+  array_t _quadrapole;
 };
 
 #endif  //__FORCESOLVER_HH__

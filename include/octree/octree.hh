@@ -46,6 +46,8 @@ class Octree {
 
   const Octreenode* getroot() { return _root; }
 
+  const unsigned int getnumnodes() { return _numnodes; }
+
   const array_t& _xpos;
   const array_t& _ypos;
   const array_t& _zpos;

@@ -11,7 +11,7 @@
 
 typedef Eigen::Array<precision_t, Eigen::Dynamic, 1> array_t;
 
-TEST(OctreeTest, OneLevelAllDimensions) {
+TEST(OctreeTest, OneLevelXYZ) {
   // test octree implementation with testdata
   const unsigned int leafsize(1);
 

@@ -80,12 +80,6 @@ void Menbsim::step() {
 
   std::cout << '\xd' << "step: " << _step_i++ << " ..." << std::flush;
 
-  // get timestep
-  _deltat = _simenv._dt;
-  if (!_deltat) {
-    _deltat = gettimestep();
-  }
-
   // reset forces
   _forcex.setZero();
   _forcey.setZero();
@@ -101,6 +95,12 @@ void Menbsim::step() {
 
   // // update particle velocity
   CCPP::BENCH::start(B_UPDATE);
+  // get timestep
+  _deltat = _simenv._dt;
+  if (!_deltat) {
+    _deltat = gettimestep();
+  }
+
   *_xvelocity += _forcex / *_masses * _deltat;
   *_yvelocity += _forcey / *_masses * _deltat;
   *_zvelocity += _forcez / *_masses * _deltat;

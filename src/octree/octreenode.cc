@@ -59,6 +59,9 @@ const unsigned int Octreenode::splitleaf() {
 }
 
 void Octreenode::createchildren() {
+  // TODO(dave): add new leafpointers
+  // TODO(dave): remove leafpointer of current
+
   // an octreenode has always 8 children
   for (unsigned child_i = 0; child_i < 8; ++child_i) {
     // compute midpoint for child with _halfwidth

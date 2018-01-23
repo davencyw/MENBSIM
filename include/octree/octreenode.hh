@@ -77,6 +77,8 @@ class Octreenode {
   bool isroot() { return _parent == nullptr; }
   void setroot(bool root) { _root = root; }
   void setleaf(bool leaf) { _leaf = leaf; }
+  unsigned int getdataindex() const { return _dataindex; }
+  void setdataindex(unsigned int dataindex) { _dataindex = dataindex; }
 
  private:
   const unsigned int splitleaf();

@@ -3,6 +3,9 @@
 #include "benchdec.hh"
 #include "global.hh"
 #include "octree/octree.hh"
+#include "octree/octreenode.hh"
+
+#include <stack>
 
 void Multipolesolver::solve(const unsigned int numparticles,
                             const array_t& xpos, const array_t& ypos,
@@ -19,7 +22,8 @@ void Multipolesolver::solve(const unsigned int numparticles,
     // TODO(dave): go through all highest possible levels of octree
   }
   CCPP::BENCH::stop(B_MULTIPOLE);
-};
+}
+
 // TODO(dave): make parameter leafsize nonstatic
 void Multipolesolver::createTree(const unsigned int numparticles,
                                  const array_t& xpos, const array_t& ypos,
@@ -27,5 +31,18 @@ void Multipolesolver::createTree(const unsigned int numparticles,
   _octree = new oct::Octree(extent, xpos, ypos, zpos, 10);
   _octree->init();
 
-  // compute multipole expansions, do this in a bfs manner
+  // create multipole datacontainer
+  const unsigned int numnodes(_octree->getnumnodes());
+  _monopole = array_t(numnodes);
+  _quadrapole = array_t(numnodes);
+
+  // compute multipole expansions
+  std::stack<const oct::Octreenode*> nodestack;
+  nodestack.push(_octree->getroot());
+
+  // TODO(dave): do from leaflevels upwards!
+  while (!nodestack.empty()) {
+    const oct::Octreenode* currentnode(nodestack.top());
+    nodestack.pop();
+  }
 }
