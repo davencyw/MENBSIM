@@ -57,7 +57,7 @@ int main(int argc, char const *argv[]) {
   CCPP::BENCH::stop(B_INIT);
 
   CCPP::BENCH::start(B_STEP);
-  sim.steps(10);
+  sim.steps(simenv._nsteps);
   CCPP::BENCH::stop(B_STEP);
 
   std::cout << "\n\n_____________________________________________________\n\n"

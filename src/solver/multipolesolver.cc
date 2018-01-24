@@ -25,6 +25,7 @@ void Multipolesolver::solve(const unsigned int numparticles,
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
+#pragma omp parallel for
   for (unsigned particle_i = 0; particle_i < numparticles; ++particle_i) {
     // TODO(dave): go through all highest possible levels of octree
   }
@@ -49,9 +50,11 @@ void Multipolesolver::multipoleExpansion() {
   // get leafnodes
   std::vector<const oct::Octreenode*> leafnodes(_octree->getleafnodes());
 
-  // TODO(dave): use openmp to parallelize
-  // compute leafnode multipole expansions
-  for (auto leafnode : leafnodes) {
+// compute leafnode multipole expansions
+#pragma omp parallel for
+  for (unsigned int leafnode_i = 0; leafnode_i < leafnodes.size();
+       ++leafnode_i) {
+    const oct::Octreenode* leafnode(leafnodes[leafnode_i]);
     const std::vector<unsigned int>* leafnodeindicesinposarray(
         leafnode->getindices());
     const unsigned int leafnodedataindex(leafnode->getdataindex());
@@ -66,6 +69,7 @@ void Multipolesolver::multipoleExpansion() {
   const std::array<oct::Octreenode*, 8>* toplevelchildren(
       _octree->getroot()->getchildren());
 
+#pragma omp parallel for
   for (unsigned int toplevelnode_i = 0; toplevelnode_i < 8; toplevelnode_i++) {
     expandmoments((*toplevelchildren)[toplevelnode_i]);
   }

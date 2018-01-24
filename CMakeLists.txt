@@ -27,8 +27,6 @@ message("___________________")
 ##BENCHMARKING
 ##
 
-add_definitions(-DCCPP_BENCH)
-
 ##___________________________
 ##
 ##FLAGS
@@ -86,15 +84,20 @@ file(GLOB OCTREESOURCES
 		src/octree/octree.cc
 )
 
-file (GLOB SOURCES
+file (GLOB SOURCESOLVER
+    src/solver/naivesolver.cc
+    src/solver/multipolesolver.cc
+)
+
+file (GLOB SOURCESSIM
 		src/main.cc
 		src/menbsim.cc
-		src/solver/naivesolver.cc
-		src/solver/multipolesolver.cc
 )
 
 file (GLOB TESTSOURCES
+    tests/test_main.cc
 		tests/test_octree.cc
+    tests/test_multipolesolver.cc
 )
 
 
@@ -105,9 +108,20 @@ file (GLOB TESTSOURCES
 
 add_library(octree ${OCTREESOURCES})
 add_library(bench ${BENCHSOURCES})
+add_library(solver ${SOURCESOLVER})
+add_library(solvernobench ${SOURCESOLVER})
+target_link_libraries(solver bench octree)
+target_link_libraries(solvernobench octree)
 
-add_executable (menbsim ${SOURCES})
-target_link_libraries(menbsim octree bench)
+add_executable (menbsim ${SOURCESSIM})
+target_link_libraries(menbsim solvernobench)
+add_executable(menbsim_profiling ${SOURCESSIM})
+target_link_libraries(menbsim_profiling bench solver)
 
 add_executable (runtests ${TESTSOURCES})
-target_link_libraries(runtests ${GTEST_LIBRARIES} pthread octree)
+target_link_libraries(runtests ${GTEST_LIBRARIES} pthread solvernobench)
+
+
+target_compile_definitions(bench PRIVATE -DCCPP_BENCH)
+target_compile_definitions(menbsim_profiling PRIVATE -DCCPP_BENCH)
+target_compile_definitions(solver PRIVATE -DCCPP_BENCH)

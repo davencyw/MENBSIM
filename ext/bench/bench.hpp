@@ -157,6 +157,10 @@ class BENCH {
     // TODO make loops c++11/14 style
     // TODO make colored
 
+    // don't show empty childs
+    if (_times[s] == 0 && l != 0) {
+      return;
+    }
     // box drawing chars
     std::string bfin("╠═════");
     std::string bspacing("");

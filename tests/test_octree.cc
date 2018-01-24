@@ -6,10 +6,8 @@
 #include <iostream>
 #include <vector>
 
+#include <gtest/gtest.h>
 #include <eigen3/Eigen/Dense>
-#include "gtest/gtest.h"
-
-typedef Eigen::Array<precision_t, Eigen::Dynamic, 1> array_t;
 
 TEST(OctreeTest, OneLevelXYZ) {
   // test octree implementation with testdata
@@ -294,9 +292,4 @@ TEST(OctreeTest, OnEdge) {
   EXPECT_EQ((*indices)[1], 1);
 
   EXPECT_EQ(octree.getnumnodes(), 8);
-}
-
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
