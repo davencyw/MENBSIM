@@ -65,6 +65,9 @@ class Multipolesolver : public Forcesolver {
   oct::Octree* _octree;
   array_t _monopole;
   array_t _quadrapole;
+  array_t _nodecomx;
+  array_t _nodecomy;
+  array_t _nodecomz;
 };
 
 #endif  //__FORCESOLVER_HH__

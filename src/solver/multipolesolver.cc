@@ -44,6 +44,9 @@ void Multipolesolver::multipoleExpansion() {
   const unsigned int numnodes(_octree->getnumnodes());
   _monopole = array_t(numnodes);
   _quadrapole = array_t(numnodes);
+  _nodecomx = array_t(numnodes);
+  _nodecomy = array_t(numnodes);
+  _nodecomz = array_t(numnodes);
   _monopole.setZero();
   _quadrapole.setZero();
 
@@ -59,11 +62,25 @@ void Multipolesolver::multipoleExpansion() {
         leafnode->getindices());
     const unsigned int leafnodedataindex(leafnode->getdataindex());
 
+    precision_t comx(0.0);
+    precision_t comy(0.0);
+    precision_t comz(0.0);
+    precision_t totalemass(0.0);
+
     for (unsigned int index : *leafnodeindicesinposarray) {
-      // leafnode monopole
-      _monopole(leafnodedataindex) += _masses(index);
-      // TODO(dave): leafnode quadrapole
+      const precision_t mass_i(_masses(index));
+      // leafnode monopole and com
+      totalemass += mass_i;
+      comx += mass_i * _xpos(index);
+      comy += mass_i * _ypos(index);
+      comz += mass_i * _zpos(index);
+      // TODO(dave): leafnode Q
     }
+    const precision_t totalmassinverse(1.0 / totalemass);
+    _monopole(leafnodedataindex) = totalemass;
+    _nodecomx(leafnodedataindex) = comx * totalmassinverse;
+    _nodecomy(leafnodedataindex) = comy * totalmassinverse;
+    _nodecomz(leafnodedataindex) = comz * totalmassinverse;
   }
 
   const std::array<oct::Octreenode*, 8>* toplevelchildren(
@@ -81,16 +98,32 @@ void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
   } else {
     const unsigned int nodedataindex(node->getdataindex());
     const std::array<oct::Octreenode*, 8>* children(node->getchildren());
-    // TODO(dave): OMP parallelize
+
+    precision_t comx(0.0);
+    precision_t comy(0.0);
+    precision_t comz(0.0);
+    precision_t totalemass(0.0);
+
     for (unsigned int child_i = 0; child_i < 8; child_i++) {
       const oct::Octreenode* childnode_i((*children)[child_i]);
       expandmoments(childnode_i);
 
       // propagate from child_i to node
       const unsigned int childdataindex(childnode_i->getdataindex());
-      // monopole
-      _monopole(nodedataindex) += _monopole(childdataindex);
+      // monopole and com
+      const precision_t mass_i(_monopole(childdataindex));
+      totalemass += mass_i;
+      comx += mass_i * _nodecomx(childdataindex);
+      comx += mass_i * _nodecomy(childdataindex);
+      comx += mass_i * _nodecomz(childdataindex);
+      // com of node
+
       // TODO(dave): quadrapole
     }
+    const precision_t totalmassinverse(1.0 / totalemass);
+    _monopole(nodedataindex) = totalemass;
+    _nodecomx(nodedataindex) = comx * totalmassinverse;
+    _nodecomy(nodedataindex) = comy * totalmassinverse;
+    _nodecomz(nodedataindex) = comz * totalmassinverse;
   }
 }

@@ -27,7 +27,11 @@ TEST(MultipoleTest, Monopole) {
   solver.solve(numparticles, xpos, ypos, zpos, masses, forcex, forcey, forcez,
                0.1, extent);
   array_t* monopole(solver.getmonopole());
-  std::cout << *monopole;
+  EXPECT_EQ((*monopole)(5), 6);
+  EXPECT_EQ((*monopole)(11), 3);
+  EXPECT_EQ((*monopole)(17), 1);
+  EXPECT_EQ((*monopole)(19), 2);
+  EXPECT_EQ((*monopole)(21), 3);
 }
 
 TEST(MultipoleTest, Quadrapole) {}
