@@ -35,6 +35,9 @@ void Multipolesolver::solve(const unsigned int numparticles,
     // TODO(dave): get force
   }
   CCPP::BENCH::stop(B_MULTIPOLE);
+
+  // destroy tree
+  delete _octree;
 }
 
 void Multipolesolver::createTree(const unsigned int leafnodesize) {
