@@ -21,7 +21,7 @@ void Multipolesolver::solve(const unsigned int numparticles,
   _extent = extent;
   _numparticles = numparticles;
 
-  createTree();
+  createTree(_simenv._octreeleafnodesize);
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
@@ -33,8 +33,8 @@ void Multipolesolver::solve(const unsigned int numparticles,
 }
 
 // TODO(dave): make parameter leafsize nonstatic
-void Multipolesolver::createTree() {
-  _octree = new oct::Octree(_extent, _xpos, _ypos, _zpos, 10);
+void Multipolesolver::createTree(const unsigned int leafnodesize) {
+  _octree = new oct::Octree(_extent, _xpos, _ypos, _zpos, leafnodesize);
   _octree->init();
   multipoleExpansion();
 }

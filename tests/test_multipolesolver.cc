@@ -6,8 +6,9 @@
 #include <eigen3/Eigen/Dense>
 
 TEST(MultipoleTest, Monopole) {
-  SimEnv emptysimenv;
-  Multipolesolver solver(emptysimenv);
+  SimEnv simenv;
+  simenv._octreeleafnodesize = 1;
+  Multipolesolver solver(simenv);
 
   const unsigned int numparticles(3);
 
@@ -25,6 +26,8 @@ TEST(MultipoleTest, Monopole) {
 
   solver.solve(numparticles, xpos, ypos, zpos, masses, forcex, forcey, forcez,
                0.1, extent);
+  array_t* monopole(solver.getmonopole());
+  std::cout << *monopole;
 }
 
 TEST(MultipoleTest, Quadrapole) {}

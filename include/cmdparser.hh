@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -27,9 +27,10 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   simenv._nthreads = __P_DEF_NTHREADS;
   simenv._scheduling = __P_DEF_SCHEDULE;
   simenv._cuda = __P_DEF_CUDA;
-  simenv._outfolder = "";
-  simenv._nooutput = false;
-  simenv._solvertype = Menbsim::MULTIPOLE;
+  simenv._outfolder = __P_DEF_OUTFOLDER;
+  simenv._nooutput = __P_DEF_NOOUTPUT;
+  simenv._solvertype = __P_DEF_SOLVERTYPE;
+  simenv._octreeleafnodesize = __P_DEF_OCTREELEAFNODESIZE;
 
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;
@@ -41,6 +42,8 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
       "softening", po::value<double>(&(simenv._softeningparam))->required(),
       "softening of potential")(
       "solvertype,t", po::value<int>(&(simenv._solvertype)), "type of solver")(
+      "leafnodesize, l", po::value<int>(&(simenv._octreeleafnodesize)),
+      "octree leafnode binsize")(
       "input,i", po::value<std::string>(&(simenv._inputfilepath))->required(),
       "input folder")("outfolder,o",
                       po::value<std::string>(&(simenv._outfolder)),

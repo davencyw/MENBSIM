@@ -27,8 +27,8 @@ class Forcesolver {
                      array_t& forcez, const precision_t softening,
                      const Extent extent) = 0;
 
- private:
-  SimEnv _simenv;
+ protected:
+  const SimEnv _simenv;
 };
 
 class Naivesolver : public Forcesolver {
@@ -48,8 +48,11 @@ class Multipolesolver : public Forcesolver {
              array_t& forcex, array_t& forcey, array_t& forcez,
              const precision_t softening, const Extent extent) override;
 
+  array_t* getmonopole() { return &_monopole; };
+  array_t* getquadrapole() { return &_quadrapole; };
+
  private:
-  void createTree();
+  void createTree(const unsigned int leafnodesize);
   void multipoleExpansion();
   void expandmoments(const oct::Octreenode* const node);
   array_t _xpos;
