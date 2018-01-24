@@ -25,14 +25,18 @@ void Multipolesolver::solve(const unsigned int numparticles,
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
+  const std::array<oct::Octreenode*, 8> rootchildren(
+      *_octree->getroot()->getchildren());
+
 #pragma omp parallel for
   for (unsigned particle_i = 0; particle_i < numparticles; ++particle_i) {
-    // TODO(dave): go through all highest possible levels of octree
+    // TODO(dave): get opening angle
+    // TODO(dave): iterate over highest possible node
+    // TODO(dave): get force
   }
   CCPP::BENCH::stop(B_MULTIPOLE);
 }
 
-// TODO(dave): make parameter leafsize nonstatic
 void Multipolesolver::createTree(const unsigned int leafnodesize) {
   _octree = new oct::Octree(_extent, _xpos, _ypos, _zpos, leafnodesize);
   _octree->init();
@@ -74,7 +78,7 @@ void Multipolesolver::multipoleExpansion() {
       comx += mass_i * _xpos(index);
       comy += mass_i * _ypos(index);
       comz += mass_i * _zpos(index);
-      // TODO(dave): leafnode Q
+      // TODO(dave): leafnode quadrapole
     }
     const precision_t totalmassinverse(1.0 / totalemass);
     _monopole(leafnodedataindex) = totalemass;
@@ -83,12 +87,12 @@ void Multipolesolver::multipoleExpansion() {
     _nodecomz(leafnodedataindex) = comz * totalmassinverse;
   }
 
-  const std::array<oct::Octreenode*, 8>* toplevelchildren(
+  const std::array<oct::Octreenode*, 8>* rootchildren(
       _octree->getroot()->getchildren());
 
 #pragma omp parallel for
   for (unsigned int toplevelnode_i = 0; toplevelnode_i < 8; toplevelnode_i++) {
-    expandmoments((*toplevelchildren)[toplevelnode_i]);
+    expandmoments((*rootchildren)[toplevelnode_i]);
   }
 }
 
@@ -114,8 +118,8 @@ void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
       const precision_t mass_i(_monopole(childdataindex));
       totalemass += mass_i;
       comx += mass_i * _nodecomx(childdataindex);
-      comx += mass_i * _nodecomy(childdataindex);
-      comx += mass_i * _nodecomz(childdataindex);
+      comy += mass_i * _nodecomy(childdataindex);
+      comz += mass_i * _nodecomz(childdataindex);
       // com of node
 
       // TODO(dave): quadrapole

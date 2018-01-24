@@ -55,6 +55,7 @@ class Multipolesolver : public Forcesolver {
   void createTree(const unsigned int leafnodesize);
   void multipoleExpansion();
   void expandmoments(const oct::Octreenode* const node);
+
   array_t _xpos;
   array_t _ypos;
   array_t _zpos;

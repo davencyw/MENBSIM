@@ -10,7 +10,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 # SET default build type to release for single generators
 if (NOT CMAKE_BUILD_TYPE)
-	SET(CMAKE_BUILD_TYPE "DEBUG" FORCE)
+	SET(CMAKE_BUILD_TYPE "RELEASE" FORCE)
 endif ()
 
 SET (CMAKE_BUILD_TYPE "DEBUG")
