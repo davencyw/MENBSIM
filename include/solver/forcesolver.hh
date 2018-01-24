@@ -49,12 +49,16 @@ class Multipolesolver : public Forcesolver {
              const precision_t softening, const Extent extent) override;
 
  private:
-  void createTree(const unsigned int numparticles, const array_t& xpos,
-                  const array_t& ypos, const array_t& zpos,
-                  const array_t& masses, const Extent extent);
-  void multipoleExpansion(const unsigned int numparticles, const array_t& xpos,
-                          const array_t& ypos, const array_t& zpos,
-                          const array_t& masses, const Extent extent);
+  void createTree();
+  void multipoleExpansion();
+  void expandmoments(const oct::Octreenode* const node);
+  array_t _xpos;
+  array_t _ypos;
+  array_t _zpos;
+  array_t _masses;
+  Extent _extent;
+  unsigned int _numparticles;
+
   oct::Octree* _octree;
   array_t _monopole;
   array_t _quadrapole;

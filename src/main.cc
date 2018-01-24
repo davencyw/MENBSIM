@@ -61,7 +61,7 @@ int main(int argc, char const *argv[]) {
   CCPP::BENCH::stop(B_STEP);
 
   std::cout << "\n\n_____________________________________________________\n\n"
-            << "finished simulation\n"
+            << "\e[32mfinished simulation\n\e[0m"
             << "\n\n\n";
 
   CCPP::BENCH::summarize();

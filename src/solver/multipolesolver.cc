@@ -14,7 +14,14 @@ void Multipolesolver::solve(const unsigned int numparticles,
                             const precision_t softening, const Extent extent) {
   // create tree first
   CCPP::BENCH::start(B_TREEGEN);
-  createTree(numparticles, xpos, ypos, zpos, masses, extent);
+  _xpos = xpos;
+  _ypos = ypos;
+  _zpos = zpos;
+  _masses = masses;
+  _extent = extent;
+  _numparticles = numparticles;
+
+  createTree();
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
@@ -25,19 +32,13 @@ void Multipolesolver::solve(const unsigned int numparticles,
 }
 
 // TODO(dave): make parameter leafsize nonstatic
-void Multipolesolver::createTree(const unsigned int numparticles,
-                                 const array_t& xpos, const array_t& ypos,
-                                 const array_t& zpos, const array_t& masses,
-                                 const Extent extent) {
-  _octree = new oct::Octree(extent, xpos, ypos, zpos, 10);
+void Multipolesolver::createTree() {
+  _octree = new oct::Octree(_extent, _xpos, _ypos, _zpos, 10);
   _octree->init();
-
-  multipoleExpansion(numparticles, xpos, ypos, zpos, masses, extent);
+  multipoleExpansion();
 }
 
-void Multipolesolver::multipoleExpansion(
-    const unsigned int numparticles, const array_t& xpos, const array_t& ypos,
-    const array_t& zpos, const array_t& masses, const Extent extent) {
+void Multipolesolver::multipoleExpansion() {
   // create multipole datacontainer
   const unsigned int numnodes(_octree->getnumnodes());
   _monopole = array_t(numnodes);
@@ -49,26 +50,43 @@ void Multipolesolver::multipoleExpansion(
   std::vector<const oct::Octreenode*> leafnodes(_octree->getleafnodes());
 
   // TODO(dave): use openmp to parallelize
-  // compute multipole expansions bottom up
+  // compute leafnode multipole expansions
   for (auto leafnode : leafnodes) {
-    const oct::Octreenode* currentnode = leafnode;
-
     const std::vector<unsigned int>* leafnodeindicesinposarray(
         leafnode->getindices());
     const unsigned int leafnodedataindex(leafnode->getdataindex());
 
     for (unsigned int index : *leafnodeindicesinposarray) {
       // leafnode monopole
-      _monopole(leafnodedataindex) += masses(index);
+      _monopole(leafnodedataindex) += _masses(index);
       // TODO(dave): leafnode quadrapole
     }
+  }
 
-    // propagate mono-/quadrapole upwards in tree
-    while (currentnode) {
-      // TODO(dave): monopole
+  const std::array<oct::Octreenode*, 8>* toplevelchildren(
+      _octree->getroot()->getchildren());
+
+  for (unsigned int toplevelnode_i = 0; toplevelnode_i < 8; toplevelnode_i++) {
+    expandmoments((*toplevelchildren)[toplevelnode_i]);
+  }
+}
+
+void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
+  if (node->isleaf()) {
+    return;
+  } else {
+    const unsigned int nodedataindex(node->getdataindex());
+    const std::array<oct::Octreenode*, 8>* children(node->getchildren());
+    // TODO(dave): OMP parallelize
+    for (unsigned int child_i = 0; child_i < 8; child_i++) {
+      const oct::Octreenode* childnode_i((*children)[child_i]);
+      expandmoments(childnode_i);
+
+      // propagate from child_i to node
+      const unsigned int childdataindex(childnode_i->getdataindex());
+      // monopole
+      _monopole(nodedataindex) += _monopole(childdataindex);
       // TODO(dave): quadrapole
-
-      currentnode = currentnode->getparent();
     }
   }
 }
