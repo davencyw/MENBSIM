@@ -55,6 +55,7 @@ class Multipolesolver : public Forcesolver {
   void createTree(const unsigned int leafnodesize);
   void multipoleExpansion();
   void expandmoments(const oct::Octreenode* const node);
+  void getdirectforce(const unsigned int particle_i, const oct::Octreenode* currentnode);
 
   array_t _xpos;
   array_t _ypos;
