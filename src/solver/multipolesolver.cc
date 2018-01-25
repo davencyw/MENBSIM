@@ -20,11 +20,20 @@ void Multipolesolver::solve(const unsigned int numparticles,
   _masses = masses;
   _extent = extent;
   _numparticles = numparticles;
-
   createTree(_simenv._octreeleafnodesize);
   CCPP::BENCH::stop(B_TREEGEN);
 
   CCPP::BENCH::start(B_MULTIPOLE);
+  getforceonparticles();
+  CCPP::BENCH::stop(B_MULTIPOLE);
+
+  // destroy tree
+  CCPP::BENCH::start(B_TREEGEN);
+  delete _octree;
+  CCPP::BENCH::stop(B_TREEGEN);
+}
+
+void Multipolesolver::getforceonparticles(){
   const std::array<oct::Octreenode*, 8> rootchildren(
       *_octree->getroot()->getchildren());
       std::stack<oct::Octreenode*> nodestoprocess;
@@ -32,38 +41,39 @@ void Multipolesolver::solve(const unsigned int numparticles,
         nodestoprocess.push(rootchildren[toplevelnode_i]);
       }
 
-#pragma omp parallel for private(nodestoprocess)
-  for (unsigned particle_i = 0; particle_i < numparticles; ++particle_i) {
-    // iterate over highest possible node for each particle
-    do {
-      const oct::Octreenode* currentnode(nodestoprocess.top());
-      nodestoprocess.pop();
-      if(currentnode->isleaf()){
-        //TODO(dave): get direct force evaluations from particles in this leafnode
-        getdirectforce(particle_i, currentnode);
-      }else{
-      // TODO(dave): get opening angle
-      precision_t openingangle(0.0);
-      //TODO(dave): set openingangle threshhold
-      if(openingangle<0.0){
-        //TODO(dave): use this nodes expansions
-        // TODO(dave): get force
-      }else{
-        //TODO(dave):push back nodes below
+  #pragma omp parallel for private(nodestoprocess)
+    for (unsigned particle_i = 0; particle_i < _numparticles; ++particle_i) {
+      // iterate over highest possible node for each particle
+      do {
+        const oct::Octreenode* currentnode(nodestoprocess.top());
+        nodestoprocess.pop();
+        if(currentnode->isleaf()){
+          //get direct force evaluations from particles in this leafnode
+          getdirectforce(particle_i, currentnode);
+        }else{
+        // TODO(dave): get opening angle
+        precision_t openingangle(0.0);
+        //TODO(dave): set openingangle threshhold
+        if(openingangle<0.0){
+          //TODO(dave): use this nodes expansions
+          // TODO(dave): to get force
+        }else{
+          // push back childnodes of currentnode
+          std::array<oct::Octreenode*,8> currentnodechildren(*currentnode->getchildren());
+          for (size_t child_i = 0; child_i < 8; child_i++) {
+            nodestoprocess.push(currentnodechildren[child_i]);
+          }
 
+        }
       }
+      } while(!nodestoprocess.empty());
     }
-    } while(!nodestoprocess.empty());
-  }
 
-  CCPP::BENCH::stop(B_MULTIPOLE);
 
-  // destroy tree
-  delete _octree;
 }
 
 void Multipolesolver::getdirectforce(const unsigned int particle_i, const oct::Octreenode* currentnode){
-
+//TODO(dave): implement
 }
 
 
