@@ -36,36 +36,36 @@ void Multipolesolver::solve(const unsigned int numparticles,
 void Multipolesolver::getforceonparticles(){
   const std::array<oct::Octreenode*, 8> rootchildren(
       *_octree->getroot()->getchildren());
-      std::stack<oct::Octreenode*> nodestoprocess;
+      std::stack<const oct::Octreenode*> nodestoprocess;
       for (size_t toplevelnode_i = 0; toplevelnode_i < 8; toplevelnode_i++) {
         nodestoprocess.push(rootchildren[toplevelnode_i]);
       }
 
-  #pragma omp parallel for private(nodestoprocess)
+//  #pragma omp parallel for private(nodestoprocess)
     for (unsigned particle_i = 0; particle_i < _numparticles; ++particle_i) {
       // iterate over highest possible node for each particle
       do {
         const oct::Octreenode* currentnode(nodestoprocess.top());
         nodestoprocess.pop();
-        if(currentnode->isleaf()){
-          //get direct force evaluations from particles in this leafnode
-          getdirectforce(particle_i, currentnode);
-        }else{
-        // TODO(dave): get opening angle
-        precision_t openingangle(0.0);
-        //TODO(dave): set openingangle threshhold
-        if(openingangle<0.0){
-          //TODO(dave): use this nodes expansions
-          // TODO(dave): to get force
-        }else{
-          // push back childnodes of currentnode
-          std::array<oct::Octreenode*,8> currentnodechildren(*currentnode->getchildren());
-          for (size_t child_i = 0; child_i < 8; child_i++) {
-            nodestoprocess.push(currentnodechildren[child_i]);
-          }
-
-        }
-      }
+        // if(currentnode->isleaf()){
+        //   //get direct force evaluations from particles in this leafnode
+        //   //getdirectforce(particle_i, currentnode);
+        // }else{
+        // // TODO(dave): get opening angle
+        // precision_t openingangle(0.0);
+        // //TODO(dave): set openingangle threshhold
+        // if(openingangle<0.0){
+        //   //TODO(dave): use this nodes expansions
+        //   // TODO(dave): to get force
+        // }else{
+        //   // push back childnodes of currentnode
+        //   std::array<oct::Octreenode*,8> currentnodechildren(*currentnode->getchildren());
+        //   for (size_t child_i = 0; child_i < 8; child_i++) {
+        //     //nodestoprocess.push(currentnodechildren[child_i]);
+        //   }
+        //
+        // }
+      // }
       } while(!nodestoprocess.empty());
     }
 
@@ -73,7 +73,28 @@ void Multipolesolver::getforceonparticles(){
 }
 
 void Multipolesolver::getdirectforce(const unsigned int particle_i, const oct::Octreenode* currentnode){
-//TODO(dave): implement
+const std::vector<unsigned int>* particlesinnodeindices(currentnode->getindices());
+for (unsigned int particle_j : *particlesinnodeindices) {
+  //TODO(dave): get force from particle_j onto particle_i
+  // SSA
+  const precision_t xj(_xpos(particle_i));
+  const precision_t yj(_ypos(particle_i));
+  const precision_t zj(_zpos(particle_i));
+
+  const precision_t xi(_xpos(particle_j));
+  const precision_t yi(_ypos(particle_j));
+  const precision_t zi(_zpos(particle_j));
+
+  //TODO(dave): check direction!
+  const precision_t xjxi(xj - xi);
+  const precision_t yjyi(yj - yi);
+  const precision_t zjzi(zj - zi);
+
+  const precision_t rmagnitude(std::sqrt(
+      xjxi * xjxi + yjyi * yjyi + zjzi * zjzi + _simenv._softeningparam * _simenv._softeningparam));
+//TODO(dave): implement further!
+}
+
 }
 
 
