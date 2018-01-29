@@ -13,6 +13,7 @@ fi
 
 #variables and parameters
 OUTFOLDER="../data/out"
+OUTPUTSTEP=5
 INFOLDER="../data/in/data.ascii"
 
 SOFTENING=0.1
@@ -30,4 +31,5 @@ eval $EXECUTABLE \
 						--numsteps $NUMSTEPS \
 						--softening $SOFTENING \
             --solvertype $SOLVERTYPE \
-						--nooutput
+            --outputstep $OUTPUTSTEP \
+						#--nooutput

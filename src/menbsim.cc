@@ -136,7 +136,7 @@ void Menbsim::steps(int numsteps) {
 }
 
 void Menbsim::step() {
-  std::cout << '\xd' << "step: " << _step_i++ << " ..." << std::flush;
+  std::cout << '\xd' << "step: " << _step_i << " ..." << std::flush;
 
   // reset forces
   _forcex.setZero();
@@ -170,6 +170,7 @@ void Menbsim::step() {
   CCPP::BENCH::stop(B_UPDATE);
 
   writeoutput();
+  ++_step_i;
 }
 
 Extent Menbsim::getextent() {
@@ -206,9 +207,13 @@ void Menbsim::writeoutput() {
     return;
   }
   if (_step_i % _simenv._outputstep == 0) {
+    std::string step_i(std::to_string(_step_i));
+    step_i.insert(step_i.begin(), 10 - step_i.length(), '0');
+    std::cout << step_i << "\n\n";
+
     // write to file
     std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
-                         std::to_string(_step_i) + ".posdat");
+                         step_i + ".posdat");
     std::string fullfilepath(_simenv._outfolder + filename);
     io::Writer::writetofile(fullfilepath, *_xposition, *_yposition,
                             *_zposition);
