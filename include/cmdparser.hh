@@ -48,6 +48,8 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
       "input folder")("outfolder,o",
                       po::value<std::string>(&(simenv._outfolder)),
                       "output folder [optional]")("nooutput", "no fileoutput")(
+      "outputstep,x", po::value<unsigned int>(&(simenv._outputstep)),
+      "every outputstep write to output [optional]")(
       "nthreads,n", po::value<int>(&(simenv._nthreads)),
       "number of threads [optional]")(
       "schedule,s", po::value<int>(&(simenv._scheduling)),

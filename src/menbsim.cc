@@ -72,10 +72,12 @@ bool Menbsim::verifyinputdensity(int output) {
   array_t xbins = array_t::Zero(numbins);
   array_t ybins = array_t::Zero(numbins);
   array_t zbins = array_t::Zero(numbins);
+  array_t binshernquist = array_t::Zero(numbins);
 
   const precision_t xextentfirst(std::abs(_inputdata.extent.x.first));
   const precision_t yextentfirst(std::abs(_inputdata.extent.y.first));
   const precision_t zextentfirst(std::abs(_inputdata.extent.z.first));
+  precision_t totalemass(0.0);
 
 #pragma omp parallel for
   for (size_t particle_i = 0; particle_i < _numparticles; particle_i++) {
@@ -89,13 +91,26 @@ bool Menbsim::verifyinputdensity(int output) {
         static_cast<unsigned int>((ypos + yextentfirst) / binwidthy));
     const unsigned int zbinsindex(
         static_cast<unsigned int>((zpos + zextentfirst) / binwidthz));
+    const precision_t mass_i((*_masses)(particle_i));
 
 #pragma omp critical
     {
       xbins(xbinsindex) += 1;
       ybins(ybinsindex) += 1;
       zbins(zbinsindex) += 1;
+      totalemass += mass_i;
     }
+  }
+
+  xbins /= _numparticles;
+  ybins /= _numparticles;
+  zbins /= _numparticles;
+
+  // hernquist density distribution
+  precision_t r(0.0);
+  const unsigned int halfbins(numbins / 2);
+
+  for (size_t bin_i = 0; bin_i < halfbins; bin_i++) {
   }
 
   // TODO(dave): write verification of rho(r) comparing to the analyitcal
@@ -107,14 +122,7 @@ bool Menbsim::verifyinputdensity(int output) {
 }  // namespace Menbsim
 
 void Menbsim::steps(int numsteps) {
-  for (int i = 0; i < numsteps; ++i) {
-    step();
-  }
-}
-
-void Menbsim::step() {
   if (!_initialized) {
-    // TODO(dave): throw error
     std::cout << "\n       ! W A R N I N G !\n"
               << " N O T   I N I T I A L I Z E D\n"
               << "   S T E P S   I G N O R E D\n\n\n";
@@ -122,6 +130,12 @@ void Menbsim::step() {
     return;
   }
 
+  for (int i = 0; i < numsteps; ++i) {
+    step();
+  }
+}
+
+void Menbsim::step() {
   std::cout << '\xd' << "step: " << _step_i++ << " ..." << std::flush;
 
   // reset forces
@@ -191,12 +205,14 @@ void Menbsim::writeoutput() {
   if (_simenv._nooutput) {
     return;
   }
-  // TODO(dave): specify step to write
-  // write to file
-  std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
-                       std::to_string(_step_i) + ".posdat");
-  std::string fullfilepath(_simenv._outfolder + filename);
-  io::Writer::writetofile(fullfilepath, *_xposition, *_yposition, *_zposition);
+  if (_step_i % _simenv._outputstep == 0) {
+    // write to file
+    std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
+                         std::to_string(_step_i) + ".posdat");
+    std::string fullfilepath(_simenv._outfolder + filename);
+    io::Writer::writetofile(fullfilepath, *_xposition, *_yposition,
+                            *_zposition);
+  }
 }
 
 }  // namespace Menbsim

@@ -45,6 +45,7 @@ struct SimEnv {
   std::string _inputfilepath;
   unsigned int _runhash;
   bool _nooutput;
+  unsigned int _outputstep = 1;
 };
 
 #endif  //__SIMENV_HH__
