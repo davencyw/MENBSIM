@@ -48,12 +48,13 @@ int main(int argc, char const *argv[]) {
   CCPP::BENCH::regchild("update", B_STEP);
   CCPP::BENCH::regchild("treegen", B_SOLVER);
   CCPP::BENCH::regchild("multipole", B_SOLVER);
+  CCPP::BENCH::regchild("verification", B_INIT);
 
   // start main program
   Menbsim::Menbsim sim(simenv);
 
   CCPP::BENCH::start(B_INIT);
-  sim.initialize(Menbsim::NOVERIFICATION);
+  sim.initialize(Menbsim::VERIFYDENSITY);
   CCPP::BENCH::stop(B_INIT);
 
   CCPP::BENCH::start(B_STEP);

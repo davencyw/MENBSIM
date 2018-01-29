@@ -47,20 +47,64 @@ void Menbsim::initialize(int checks) {
   _forcez = array_t(_numparticles);
 
   if (checks) {
+    CCPP::BENCH::start(B_VERIFICATION);
     verifyinputdensity(1);
+    CCPP::BENCH::stop(B_VERIFICATION);
   }
 
   _initialized = true;
 }
 
 bool Menbsim::verifyinputdensity(int output) {
+  // creates histogram of current density in 3d
+  const unsigned int numbins(2000);
+
+  const precision_t xdist(_inputdata.extent.x.second -
+                          _inputdata.extent.x.first + 0.01);
+  const precision_t ydist(_inputdata.extent.y.second -
+                          _inputdata.extent.y.first + 0.01);
+  const precision_t zdist(_inputdata.extent.z.second -
+                          _inputdata.extent.z.first + 0.01);
+  const precision_t binwidthx(xdist / numbins);
+  const precision_t binwidthy(ydist / numbins);
+  const precision_t binwidthz(zdist / numbins);
+
+  array_t xbins = array_t::Zero(numbins);
+  array_t ybins = array_t::Zero(numbins);
+  array_t zbins = array_t::Zero(numbins);
+
+  const precision_t xextentfirst(std::abs(_inputdata.extent.x.first));
+  const precision_t yextentfirst(std::abs(_inputdata.extent.y.first));
+  const precision_t zextentfirst(std::abs(_inputdata.extent.z.first));
+
+#pragma omp parallel for
+  for (size_t particle_i = 0; particle_i < _numparticles; particle_i++) {
+    const precision_t xpos((*_xposition)(particle_i));
+    const precision_t ypos((*_yposition)(particle_i));
+    const precision_t zpos((*_zposition)(particle_i));
+
+    const unsigned int xbinsindex(
+        static_cast<unsigned int>((xpos + xextentfirst) / binwidthx));
+    const unsigned int ybinsindex(
+        static_cast<unsigned int>((ypos + yextentfirst) / binwidthy));
+    const unsigned int zbinsindex(
+        static_cast<unsigned int>((zpos + zextentfirst) / binwidthz));
+
+#pragma omp critical
+    {
+      xbins(xbinsindex) += 1;
+      ybins(ybinsindex) += 1;
+      zbins(zbinsindex) += 1;
+    }
+  }
+
   // TODO(dave): write verification of rho(r) comparing to the analyitcal
   // density funcitno described by Hernquist
 
   // TODO(dave): add poissonian error bars to the numeric density profile and
   // plot
   return true;
-}
+}  // namespace Menbsim
 
 void Menbsim::steps(int numsteps) {
   for (int i = 0; i < numsteps; ++i) {
@@ -140,7 +184,7 @@ Extent Menbsim::getextent() {
 
 precision_t Menbsim::gettimestep() {
   // TODO(dave): compute biggest possible timestepsize
-  return 0.001;
+  return 0.01;
 }
 
 void Menbsim::writeoutput() {

@@ -8,6 +8,14 @@
 
 #include "bench/bench.hpp"
 
-enum { B_INIT, B_STEP, B_SOLVER, B_UPDATE, B_TREEGEN, B_MULTIPOLE };
+enum {
+  B_INIT,
+  B_STEP,
+  B_SOLVER,
+  B_UPDATE,
+  B_TREEGEN,
+  B_MULTIPOLE,
+  B_VERIFICATION
+};
 
 #endif  //__BENCHDEC_HH__

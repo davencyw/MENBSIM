@@ -16,7 +16,7 @@ OUTFOLDER="../data/out"
 INFOLDER="../data/in/data.ascii"
 
 SOFTENING=0.1
-NUMSTEPS=24
+NUMSTEPS=10
 
 SOLVERTYPE=1
 
