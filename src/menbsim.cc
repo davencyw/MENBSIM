@@ -209,7 +209,6 @@ void Menbsim::writeoutput() {
   if (_step_i % _simenv._outputstep == 0) {
     std::string step_i(std::to_string(_step_i));
     step_i.insert(step_i.begin(), 10 - step_i.length(), '0');
-    std::cout << step_i << "\n\n";
 
     // write to file
     std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
