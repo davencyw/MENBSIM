@@ -60,6 +60,26 @@ void Multipolesolver::getforceonparticles() {
         if (openingangle < 0.0) {
           // TODO(dave): use this nodes expansions
           // TODO(dave): to get force
+          const unsigned int nodedataindex(currentnode->getdataindex());
+
+          // monopoleforce
+          Eigen::Vector3d particle_i_to_nodecom(
+              _nodecomx(nodedataindex) - _xpos(particle_i),
+              _nodecomy(nodedataindex) - _ypos(particle_i),
+              _nodecomz(nodedataindex) - _zpos(particle_i));
+          const precision_t distance(particle_i_to_nodecom.norm());
+          const precision_t distance3(distance * distance * distance);
+          const precision_t distance3inverse(1.0 / distance3);
+          const precision_t massdistance3inverse(_masses(particle_i) *
+                                                 distance3inverse);
+
+          _forcex(particle_i) -=
+              massdistance3inverse * particle_i_to_nodecom(0);
+          _forcey(particle_i) -=
+              massdistance3inverse * particle_i_to_nodecom(1);
+          _forcez(particle_i) -=
+              massdistance3inverse * particle_i_to_nodecom(2);
+
         } else {
           // push back childnodes of currentnode
           std::array<oct::Octreenode*, 8> currentnodechildren(
