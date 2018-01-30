@@ -107,19 +107,92 @@ bool Menbsim::verifyinputdensity(int output) {
   zbins /= _numparticles;
 
   // hernquist density distribution
-  precision_t r(0.0);
+  // precision_t r(0.0);
   const unsigned int halfbins(numbins / 2);
 
   for (size_t bin_i = 0; bin_i < halfbins; bin_i++) {
   }
 
-  // TODO(dave): write verification of rho(r) comparing to the analyitcal
+  // TODO(dave): write verification of rho(r) comparing to the analytical
   // density function described by Hernquist
 
   // TODO(dave): add poissonian error bars to the numeric density profile and
   // plot
   return true;
 }  // namespace Menbsim
+
+void Menbsim::verifydirectforce() {
+  step();
+  // verify shells with Newtons second theorem for spherical potentials
+  Extent extent = getextent();
+
+  const precision_t xdist(extent.x.second - extent.x.first);
+  const precision_t ydist(extent.y.second - extent.y.first);
+  const precision_t zdist(extent.z.second - extent.z.first);
+  const precision_t dist(std::max(std::max(xdist, ydist), zdist));
+
+  const unsigned int numshells(200);
+  const precision_t shelldist(dist / static_cast<precision_t>(numshells));
+  const precision_t shelldx(shelldist * 0.1);
+
+  array_t analytical_force(numshells);
+  array_t averaged_force(numshells);
+  averaged_force.setZero();
+
+  array_t particledist = (*_xposition) * (*_xposition) +
+                         (*_yposition) * (*_yposition) +
+                         (*_zposition) * (*_zposition);
+  particledist.sqrt();
+  std::vector<unsigned int> sortedindices(_numparticles);
+  iota(sortedindices.begin(), sortedindices.end(), 0);
+
+  // sort according to distance from origin
+  // TODO(dave): use __gnu_parallel, way faster!
+  sort(sortedindices.begin(), sortedindices.end(),
+       [&particledist](unsigned int i1, unsigned int i2) {
+         return particledist(i1) < particledist(i2);
+       });
+
+  const unsigned int shell_i(0);
+  precision_t massinshell(0.0);
+  precision_t massonshell(0.0);
+  precision_t currentshelldist(shelldist);
+
+  for (unsigned int particle_i = 0; particle_i < _numparticles; particle_i++) {
+    const unsigned int particleindex(sortedindices[particle_i]);
+    const precision_t currentparticledist(particledist(particleindex));
+    if (currentparticledist < currentshelldist) {
+      // too near, is inside shell
+      massinshell += (*_masses)(particleindex);
+    } else {
+      if (currentparticledist < currentshelldist + shelldx) {
+        // is on shell
+        massonshell += (*_masses)(particleindex);
+        averaged_force(shell_i) +=
+            std::sqrt(_forcex(particleindex) * _forcex(particleindex) +
+                      _forcey(particleindex) * _forcey(particleindex) +
+                      _forcez(particleindex) * _forcez(particleindex));
+      }
+      // analytical force magnitude is M^2/r^4
+      analytical_force(shell_i) = massinshell * massinshell /
+                                  (currentshelldist * currentshelldist *
+                                   currentshelldist * currentshelldist);
+
+      // too far, outside shell
+      currentshelldist += shelldist;
+      massinshell += massonshell + (*_masses)(particleindex);
+      massonshell = 0;
+    }
+  }
+
+  std::cout
+      << "AV FORCE: \t\t\t AN FORCE:\n_____________________________________\n";
+  for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
+    std::cout << averaged_force(shell_i) << " , " << analytical_force(shell_i)
+              << "\n";
+  }
+  std::cout << "\n\n\n";
+}
 
 void Menbsim::steps(int numsteps) {
   if (!_initialized) {

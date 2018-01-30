@@ -43,8 +43,9 @@ class Menbsim {
   //    2 - terminal output long
   bool verifyinputdensity(int output);
 
-  void steps(int);
+  void verifydirectforce();
 
+  void steps(int);
 
   void switchsolver(int type) {
     switch (type) {

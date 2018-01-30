@@ -94,6 +94,11 @@ file (GLOB SOURCESSIM
 		src/menbsim.cc
 )
 
+file (GLOB SOURCESSIMVERIFY
+		src/main_verify.cc
+		src/menbsim.cc
+)
+
 file (GLOB TESTSOURCES
     tests/test_main.cc
 		tests/test_octree.cc
@@ -114,13 +119,14 @@ target_link_libraries(solver bench octree)
 target_link_libraries(solvernobench octree)
 
 add_executable (menbsim ${SOURCESSIM})
-target_link_libraries(menbsim solvernobench)
+add_executable (menbsim_verification ${SOURCESSIMVERIFY})
 add_executable(menbsim_profiling ${SOURCESSIM})
+target_link_libraries(menbsim solvernobench)
+target_link_libraries(menbsim_verification solvernobench)
 target_link_libraries(menbsim_profiling bench solver)
 
 add_executable (runtests ${TESTSOURCES})
 target_link_libraries(runtests ${GTEST_LIBRARIES} pthread solvernobench)
-
 
 target_compile_definitions(bench PRIVATE -DCCPP_BENCH)
 target_compile_definitions(menbsim_profiling PRIVATE -DCCPP_BENCH)

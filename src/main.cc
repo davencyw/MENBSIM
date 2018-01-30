@@ -55,7 +55,7 @@ int main(int argc, char const *argv[]) {
   Menbsim::Menbsim sim(simenv);
 
   CCPP::BENCH::start(B_INIT);
-  sim.initialize(Menbsim::VERIFYDENSITY);
+  sim.initialize(Menbsim::NOVERIFICATION);
   CCPP::BENCH::stop(B_INIT);
 
   CCPP::BENCH::start(B_STEP);
