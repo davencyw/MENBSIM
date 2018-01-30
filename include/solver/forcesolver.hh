@@ -49,11 +49,12 @@ class Multipolesolver : public Forcesolver {
              const precision_t softening, const Extent extent) override;
 
   array_t* getmonopole() { return &_monopole; };
-  array_t* getquadrapole() { return &_quadrapole; };
+  std::vector<mat33_t>* getquadrapole() { return &_quadrapole; };
 
  private:
   void createTree(const unsigned int leafnodesize);
   void multipoleExpansion();
+  void getquadrapole(const oct::Octreenode* node, mat33_t& quadrapole);
   void expandmoments(const oct::Octreenode* const node);
   void getforceonparticles();
   void getdirectforce(const unsigned int particle_i,
@@ -72,7 +73,7 @@ class Multipolesolver : public Forcesolver {
 
   oct::Octree* _octree;
   array_t _monopole;
-  array_t _quadrapole;
+  std::vector<mat33_t> _quadrapole;
   array_t _nodecomx;
   array_t _nodecomy;
   array_t _nodecomz;

@@ -15,7 +15,8 @@ enum {
   B_UPDATE,
   B_TREEGEN,
   B_MULTIPOLE,
-  B_VERIFICATION
+  B_VERIFICATION,
+  B_OUTPUT
 };
 
 #endif  //__BENCHDEC_HH__

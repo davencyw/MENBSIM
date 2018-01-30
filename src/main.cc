@@ -49,6 +49,7 @@ int main(int argc, char const *argv[]) {
   CCPP::BENCH::regchild("treegen", B_SOLVER);
   CCPP::BENCH::regchild("multipole", B_SOLVER);
   CCPP::BENCH::regchild("verification", B_INIT);
+  CCPP::BENCH::regchild("outputwriter", B_STEP);
 
   // start main program
   Menbsim::Menbsim sim(simenv);

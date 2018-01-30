@@ -114,7 +114,7 @@ bool Menbsim::verifyinputdensity(int output) {
   }
 
   // TODO(dave): write verification of rho(r) comparing to the analyitcal
-  // density funcitno described by Hernquist
+  // density function described by Hernquist
 
   // TODO(dave): add poissonian error bars to the numeric density profile and
   // plot
@@ -169,7 +169,9 @@ void Menbsim::step() {
   *_zposition += *_zvelocity * _deltat;
   CCPP::BENCH::stop(B_UPDATE);
 
+  CCPP::BENCH::start(B_OUTPUT);
   writeoutput();
+  CCPP::BENCH::stop(B_OUTPUT);
   ++_step_i;
 }
 

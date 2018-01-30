@@ -122,12 +122,11 @@ void Multipolesolver::multipoleExpansion() {
   // create multipole datacontainer
   const unsigned int numnodes(_octree->getnumnodes());
   _monopole = array_t(numnodes);
-  _quadrapole = array_t(numnodes);
+  _quadrapole = std::vector<mat33_t>(numnodes);
   _nodecomx = array_t(numnodes);
   _nodecomy = array_t(numnodes);
   _nodecomz = array_t(numnodes);
   _monopole.setZero();
-  _quadrapole.setZero();
 
   // get leafnodes
   std::vector<const oct::Octreenode*> leafnodes(_octree->getleafnodes());
@@ -146,20 +145,30 @@ void Multipolesolver::multipoleExpansion() {
     precision_t comz(0.0);
     precision_t totalemass(0.0);
 
+    mat33_t quadrapole;
+    quadrapole.setZero();
+
+    // leafnode monopole and com
     for (unsigned int index : *leafnodeindicesinposarray) {
+      // SSA
       const precision_t mass_i(_masses(index));
-      // leafnode monopole and com
+      const precision_t xpos(_xpos(index));
+      const precision_t ypos(_ypos(index));
+      const precision_t zpos(_zpos(index));
       totalemass += mass_i;
-      comx += mass_i * _xpos(index);
-      comy += mass_i * _ypos(index);
-      comz += mass_i * _zpos(index);
-      // TODO(dave): leafnode quadrapole
+      comx += mass_i * xpos;
+      comy += mass_i * ypos;
+      comz += mass_i * zpos;
     }
     const precision_t totalmassinverse(1.0 / totalemass);
     _monopole(leafnodedataindex) = totalemass;
     _nodecomx(leafnodedataindex) = comx * totalmassinverse;
     _nodecomy(leafnodedataindex) = comy * totalmassinverse;
     _nodecomz(leafnodedataindex) = comz * totalmassinverse;
+
+    getquadrapole(leafnode, quadrapole);
+
+    _quadrapole[leafnodedataindex] = quadrapole;
   }
 
   const std::array<oct::Octreenode*, 8>* rootchildren(
@@ -192,17 +201,61 @@ void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
       // monopole and com
       const precision_t mass_i(_monopole(childdataindex));
       totalemass += mass_i;
+      // com of node
       comx += mass_i * _nodecomx(childdataindex);
       comy += mass_i * _nodecomy(childdataindex);
       comz += mass_i * _nodecomz(childdataindex);
-      // com of node
-
-      // TODO(dave): quadrapole
     }
+
     const precision_t totalmassinverse(1.0 / totalemass);
     _monopole(nodedataindex) = totalemass;
     _nodecomx(nodedataindex) = comx * totalmassinverse;
     _nodecomy(nodedataindex) = comy * totalmassinverse;
     _nodecomz(nodedataindex) = comz * totalmassinverse;
+
+    mat33_t quadrapole;
+    getquadrapole(node, quadrapole);
+  }
+}
+
+void Multipolesolver::getquadrapole(const oct::Octreenode* node,
+                                    mat33_t& quadrapole) {
+  const unsigned int nodedataindex(node->getdataindex());
+  const std::vector<unsigned int>* nodeindicesinposarray(node->getindices());
+
+  const precision_t comx(_nodecomx(nodedataindex));
+  const precision_t comy(_nodecomy(nodedataindex));
+  const precision_t comz(_nodecomz(nodedataindex));
+
+  for (unsigned int index : *nodeindicesinposarray) {
+    const precision_t mass_i(_masses(index));
+    // shifted position, com frame
+    const precision_t xpos(_xpos(index) - comx);
+    const precision_t ypos(_ypos(index) - comy);
+    const precision_t zpos(_zpos(index) - comz);
+
+    // node quadrapole
+    const precision_t xpos2(xpos * xpos);
+    const precision_t ypos2(ypos * ypos);
+    const precision_t zpos2(zpos * zpos);
+    const precision_t length(std::sqrt(xpos2 + ypos2 + zpos2));
+    const precision_t s00(3.0 * (xpos2)-length);
+    const precision_t s11(3.0 * (ypos2)-length);
+    const precision_t s22(3.0 * (ypos2)-length);
+    quadrapole(0, 0) += s00;
+    quadrapole(1, 1) += s11;
+    quadrapole(2, 2) += s22;
+
+    const precision_t s10(3.0 * (xpos * ypos));
+    const precision_t s20(3.0 * (xpos * zpos));
+    const precision_t s21(3.0 * (zpos * ypos));
+    quadrapole(1, 0) += s10;
+    quadrapole(0, 1) += s10;
+    quadrapole(2, 0) += s20;
+    quadrapole(0, 2) += s20;
+    quadrapole(2, 1) += s21;
+    quadrapole(1, 2) += s21;
+
+    quadrapole *= mass_i;
   }
 }
