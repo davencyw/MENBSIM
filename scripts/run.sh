@@ -16,10 +16,13 @@ OUTFOLDER="../data/out"
 OUTPUTSTEP=5
 INFOLDER="../data/in/data.ascii"
 
+SOLVERTYPE=1
 SOFTENING=0.1
 NUMSTEPS=10
 
-SOLVERTYPE=1
+OMPNUMTHREADS=2
+
+
 
 #___________________________
 
@@ -31,5 +34,6 @@ eval $EXECUTABLE \
 						--numsteps $NUMSTEPS \
 						--softening $SOFTENING \
             --solvertype $SOLVERTYPE \
+            --nthreads $OMPNUMTHREADS \
             --outputstep $OUTPUTSTEP \
 						#--nooutput
