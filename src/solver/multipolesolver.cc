@@ -58,8 +58,7 @@ void Multipolesolver::getforceonparticles() {
         precision_t openingangle(0.0);
         // TODO(dave): set openingangle threshhold
         if (openingangle < 0.0) {
-          // TODO(dave): use this nodes expansions
-          // TODO(dave): to get force
+          // use this nodes expansion to get force
           const unsigned int nodedataindex(currentnode->getdataindex());
 
           // monopoleforce
@@ -72,13 +71,14 @@ void Multipolesolver::getforceonparticles() {
           const precision_t distance3inverse(1.0 / distance3);
           const precision_t massdistance3inverse(_masses(particle_i) *
                                                  distance3inverse);
-
           _forcex(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(0);
           _forcey(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(1);
           _forcez(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(2);
+
+          // TODO(dave): quadrapole force!
 
         } else {
           // push back childnodes of currentnode
