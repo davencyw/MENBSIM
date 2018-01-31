@@ -24,8 +24,8 @@ TEST(MultipoleTest, Monopole) {
   Extent extent;
   extent.x = extent.y = extent.z = std::make_pair(0, 1);
 
-  solver.solve(numparticles, xpos, ypos, zpos, masses, forcex, forcey, forcez,
-               0.1, extent);
+  solver.solve(numparticles, xpos, ypos, zpos, masses, &forcex, &forcey,
+               &forcez, 0.1, extent);
   array_t* monopole(solver.getmonopole());
   EXPECT_EQ((*monopole)(5), 6);
   EXPECT_EQ((*monopole)(11), 3);

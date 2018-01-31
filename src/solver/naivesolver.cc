@@ -7,8 +7,8 @@
 // TODO(dave): work with eigens raw buffer to get autovectorization!
 void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
                         const array_t& ypos, const array_t& zpos,
-                        const array_t& masses, array_t& forcex, array_t& forcey,
-                        array_t& forcez, const precision_t softening,
+                        const array_t& masses, array_t* forcex, array_t* forcey,
+                        array_t* forcez, const precision_t softening,
                         const Extent extent) {
   // NOT OPTIMIZED
   for (unsigned int i = 0; i < numparticles; ++i) {
@@ -39,12 +39,12 @@ void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
       const precision_t fy1(forcemagnitude * y1y2);
       const precision_t fz1(forcemagnitude * z1z2);
 
-      forcex(i) += fx1;
-      forcey(i) += fy1;
-      forcez(i) += fz1;
-      forcex(j) += -fx1;
-      forcey(j) += -fy1;
-      forcez(j) += -fz1;
+      (*forcex)(i) += fx1;
+      (*forcey)(i) += fy1;
+      (*forcez)(i) += fz1;
+      (*forcex)(j) += -fx1;
+      (*forcey)(j) += -fy1;
+      (*forcez)(j) += -fz1;
     }
   }
 };

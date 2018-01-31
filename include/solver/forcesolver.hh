@@ -23,8 +23,8 @@ class Forcesolver {
   Forcesolver(SimEnv simenv) : _simenv(simenv){};
   virtual void solve(const unsigned int numparticles, const array_t& xpos,
                      const array_t& ypos, const array_t& zpos,
-                     const array_t& masses, array_t& forcex, array_t& forcey,
-                     array_t& forcez, const precision_t softening,
+                     const array_t& masses, array_t* forcex, array_t* forcey,
+                     array_t* forcez, const precision_t softening,
                      const Extent extent) = 0;
 
  protected:
@@ -36,7 +36,7 @@ class Naivesolver : public Forcesolver {
   Naivesolver(SimEnv simenv) : Forcesolver(simenv){};
   void solve(const unsigned int numparticles, const array_t& xpos,
              const array_t& ypos, const array_t& zpos, const array_t& masses,
-             array_t& forcex, array_t& forcey, array_t& forcez,
+             array_t* forcex, array_t* forcey, array_t* forcez,
              const precision_t softening, const Extent extent) override;
 };
 
@@ -45,7 +45,7 @@ class Multipolesolver : public Forcesolver {
   Multipolesolver(SimEnv simenv) : Forcesolver(simenv){};
   void solve(const unsigned int numparticles, const array_t& xpos,
              const array_t& ypos, const array_t& zpos, const array_t& masses,
-             array_t& forcex, array_t& forcey, array_t& forcez,
+             array_t* forcex, array_t* forcey, array_t* forcez,
              const precision_t softening, const Extent extent) override;
 
   array_t* getmonopole() { return &_monopole; };
@@ -67,9 +67,9 @@ class Multipolesolver : public Forcesolver {
   Extent _extent;
   unsigned int _numparticles;
 
-  array_t _forcex;
-  array_t _forcey;
-  array_t _forcez;
+  array_t* _forcex;
+  array_t* _forcey;
+  array_t* _forcez;
 
   oct::Octree* _octree;
   array_t _monopole;

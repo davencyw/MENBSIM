@@ -123,21 +123,15 @@ bool Menbsim::verifyinputdensity(int output) {
 
 void Menbsim::verifydirectforce() {
   step();
+  // std::cout << _forcex;
+  return;
   // verify shells with Newtons second theorem for spherical potentials
-  Extent extent = getextent();
-
-  const precision_t xdist(extent.x.second - extent.x.first);
-  const precision_t ydist(extent.y.second - extent.y.first);
-  const precision_t zdist(extent.z.second - extent.z.first);
-  const precision_t dist(std::max(std::max(xdist, ydist), zdist));
-
-  const unsigned int numshells(200);
-  const precision_t shelldist(dist / static_cast<precision_t>(numshells));
-  const precision_t shelldx(shelldist * 0.1);
+  const unsigned int numshells(50);
 
   array_t analytical_force(numshells);
   array_t averaged_force(numshells);
   averaged_force.setZero();
+  analytical_force.setZero();
 
   array_t particledist = (*_xposition) * (*_xposition) +
                          (*_yposition) * (*_yposition) +
@@ -153,40 +147,54 @@ void Menbsim::verifydirectforce() {
          return particledist(i1) < particledist(i2);
        });
 
-  const unsigned int shell_i(0);
+  // empiric shell distance for provided input dataset
+  const precision_t shelldist(2940.53 / static_cast<precision_t>(numshells));
+  const precision_t shelldx(shelldist * 0.1);
+  const precision_t shelldxhalf(shelldx);
+
   precision_t massinshell(0.0);
-  precision_t massonshell(0.0);
-  precision_t currentshelldist(shelldist);
+  precision_t currentshelldist(0);
+  unsigned int particle_i(0);
+  unsigned int sortedindex(sortedindices[0]);
+  unsigned int totpart(0);
 
-  for (unsigned int particle_i = 0; particle_i < _numparticles; particle_i++) {
-    const unsigned int particleindex(sortedindices[particle_i]);
-    const precision_t currentparticledist(particledist(particleindex));
-    if (currentparticledist < currentshelldist) {
-      // too near, is inside shell
-      massinshell += (*_masses)(particleindex);
-    } else {
-      if (currentparticledist < currentshelldist + shelldx) {
-        // is on shell
-        massonshell += (*_masses)(particleindex);
-        averaged_force(shell_i) +=
-            std::sqrt(_forcex(particleindex) * _forcex(particleindex) +
-                      _forcey(particleindex) * _forcey(particleindex) +
-                      _forcez(particleindex) * _forcez(particleindex));
-      }
-      // analytical force magnitude is M^2/r^4
-      analytical_force(shell_i) = massinshell * massinshell /
-                                  (currentshelldist * currentshelldist *
-                                   currentshelldist * currentshelldist);
+  for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
+    unsigned int numparticles_inshelli(0);
 
-      // too far, outside shell
-      currentshelldist += shelldist;
-      massinshell += massonshell + (*_masses)(particleindex);
-      massonshell = 0;
+    currentshelldist += shelldist;
+    while (particledist(sortedindex) < currentshelldist - shelldxhalf &&
+           particle_i < _numparticles - 1) {
+      // inside shell
+      ++numparticles_inshelli;
+      massinshell += (*_masses)(sortedindex);
+      // next particle
+      sortedindex = sortedindices[++particle_i];
     }
+    precision_t massonshell(0.0);
+    precision_t forceonshell(0.0);
+    unsigned int particlesonshell(0);
+    while (particledist(sortedindex) > currentshelldist - shelldxhalf &&
+           particledist(sortedindex) < currentshelldist + shelldxhalf &&
+           particle_i < _numparticles - 1) {
+      // on shell
+      ++particlesonshell;
+      massonshell += (*_masses)(sortedindex);
+      forceonshell += std::sqrt(_forcex(sortedindex) * _forcex(sortedindex) +
+                                _forcey(sortedindex) * _forcey(sortedindex) +
+                                _forcez(sortedindex) * _forcez(sortedindex));
+      sortedindex = sortedindices[++particle_i];
+    }
+    averaged_force(shell_i) =
+        forceonshell / static_cast<precision_t>(particlesonshell);
+    std::cout << "shell " << shell_i << " np: " << particlesonshell << "\tfos "
+              << forceonshell << "\n";
+
+    massinshell += massonshell;
   }
 
   std::cout
-      << "AV FORCE: \t\t\t AN FORCE:\n_____________________________________\n";
+      << "\n\n\nDIRECT FORCEVERIFICATION\n\n"
+      << "AV FORCE: \t\t AN FORCE:\n_____________________________________\n";
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
     std::cout << averaged_force(shell_i) << " , " << analytical_force(shell_i)
               << "\n";
@@ -204,13 +212,12 @@ void Menbsim::steps(int numsteps) {
   }
 
   for (int i = 0; i < numsteps; ++i) {
+    std::cout << '\xd' << "step: " << _step_i << " ..." << std::flush;
     step();
   }
 }
 
 void Menbsim::step() {
-  std::cout << '\xd' << "step: " << _step_i << " ..." << std::flush;
-
   // reset forces
   _forcex.setZero();
   _forcey.setZero();
@@ -221,7 +228,7 @@ void Menbsim::step() {
   // compute force
   CCPP::BENCH::start(B_SOLVER);
   _solver->solve(_numparticles, *_xposition, *_yposition, *_zposition, *_masses,
-                 _forcex, _forcey, _forcez, _softeningparam, extent);
+                 &_forcex, &_forcey, &_forcez, _softeningparam, extent);
   CCPP::BENCH::stop(B_SOLVER);
 
   // // update particle velocity

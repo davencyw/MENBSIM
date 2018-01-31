@@ -10,7 +10,7 @@
 void Multipolesolver::solve(const unsigned int numparticles,
                             const array_t& xpos, const array_t& ypos,
                             const array_t& zpos, const array_t& masses,
-                            array_t& forcex, array_t& forcey, array_t& forcez,
+                            array_t* forcex, array_t* forcey, array_t* forcez,
                             const precision_t softening, const Extent extent) {
   // create tree first
   CCPP::BENCH::start(B_TREEGEN);
@@ -39,14 +39,15 @@ void Multipolesolver::solve(const unsigned int numparticles,
 void Multipolesolver::getforceonparticles() {
   const std::array<oct::Octreenode*, 8> rootchildren(
       *_octree->getroot()->getchildren());
-  std::stack<const oct::Octreenode*> nodestoprocess;
+  std::stack<const oct::Octreenode*> rootnodestoprocess;
   for (size_t toplevelnode_i = 0; toplevelnode_i < 8; toplevelnode_i++) {
-    nodestoprocess.push(rootchildren[toplevelnode_i]);
+    rootnodestoprocess.push(rootchildren[toplevelnode_i]);
   }
 
-#pragma omp parallel for private(nodestoprocess)
+  //#pragma omp parallel for private(nodestoprocess)
   for (unsigned particle_i = 0; particle_i < _numparticles; ++particle_i) {
     // iterate over highest possible node for each particle
+    std::stack<const oct::Octreenode*> nodestoprocess = rootnodestoprocess;
     while (!nodestoprocess.empty()) {
       const oct::Octreenode* currentnode(nodestoprocess.top());
       nodestoprocess.pop();
@@ -71,11 +72,11 @@ void Multipolesolver::getforceonparticles() {
           const precision_t distance3inverse(1.0 / distance3);
           const precision_t massdistance3inverse(_masses(particle_i) *
                                                  distance3inverse);
-          _forcex(particle_i) -=
+          (*_forcex)(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(0);
-          _forcey(particle_i) -=
+          (*_forcey)(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(1);
-          _forcez(particle_i) -=
+          (*_forcez)(particle_i) -=
               massdistance3inverse * particle_i_to_nodecom(2);
 
           // TODO(dave): quadrapole force!
@@ -100,35 +101,37 @@ void Multipolesolver::getdirectforce(const unsigned int particle_i,
   for (unsigned int particle_j : *particlesinnodeindices) {
     // Get force from particle_j onto particle_i
     // SSA
-    const precision_t xj(_xpos(particle_j));
-    const precision_t yj(_ypos(particle_j));
-    const precision_t zj(_zpos(particle_j));
+    if (particle_j != particle_i) {
+      const precision_t xj(_xpos(particle_j));
+      const precision_t yj(_ypos(particle_j));
+      const precision_t zj(_zpos(particle_j));
 
-    const precision_t xi(_xpos(particle_i));
-    const precision_t yi(_ypos(particle_i));
-    const precision_t zi(_zpos(particle_i));
+      const precision_t xi(_xpos(particle_i));
+      const precision_t yi(_ypos(particle_i));
+      const precision_t zi(_zpos(particle_i));
 
-    const precision_t xjxi(xi - xj);
-    const precision_t yjyi(yi - yj);
-    const precision_t zjzi(zi - zj);
+      const precision_t xjxi(xi - xj);
+      const precision_t yjyi(yi - yj);
+      const precision_t zjzi(zi - zj);
 
-    const precision_t rmagnitude(
-        std::sqrt(xjxi * xjxi + yjyi * yjyi + zjzi * zjzi +
-                  _simenv._softeningparam * _simenv._softeningparam));
+      const precision_t rmagnitude(
+          std::sqrt(xjxi * xjxi + yjyi * yjyi + zjzi * zjzi +
+                    _simenv._softeningparam * _simenv._softeningparam));
 
-    const precision_t m1(_masses(particle_i));
-    const precision_t m2(_masses(particle_j));
+      const precision_t m1(_masses(particle_i));
+      const precision_t m2(_masses(particle_j));
 
-    const precision_t forcemagnitude(m1 * m2 / rmagnitude * rmagnitude *
-                                     rmagnitude);
+      const precision_t forcemagnitude(m1 * m2 / rmagnitude * rmagnitude *
+                                       rmagnitude);
 
-    const precision_t fx(forcemagnitude * xjxi);
-    const precision_t fy(forcemagnitude * yjyi);
-    const precision_t fz(forcemagnitude * zjzi);
+      const precision_t fx(forcemagnitude * xjxi);
+      const precision_t fy(forcemagnitude * yjyi);
+      const precision_t fz(forcemagnitude * zjzi);
 
-    _forcex(particle_i) += fx;
-    _forcey(particle_i) += fy;
-    _forcez(particle_i) += fz;
+      (*_forcex)(particle_i) += fx;
+      (*_forcey)(particle_i) += fy;
+      (*_forcez)(particle_i) += fz;
+    }
   }
 }
 
