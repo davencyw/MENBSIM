@@ -44,6 +44,7 @@ void Multipolesolver::getforceonparticles() {
     rootnodestoprocess.push(rootchildren[toplevelnode_i]);
   }
 
+  // TODO(dave): check this omp implementation
   //#pragma omp parallel for private(nodestoprocess)
   for (unsigned particle_i = 0; particle_i < _numparticles; ++particle_i) {
     // iterate over highest possible node for each particle

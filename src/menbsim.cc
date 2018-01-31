@@ -123,7 +123,6 @@ bool Menbsim::verifyinputdensity(int output) {
 
 void Menbsim::verifydirectforce() {
   step();
-  // std::cout << _forcex;
   return;
   // verify shells with Newtons second theorem for spherical potentials
   const unsigned int numshells(50);
@@ -186,9 +185,10 @@ void Menbsim::verifydirectforce() {
     }
     averaged_force(shell_i) =
         forceonshell / static_cast<precision_t>(particlesonshell);
-    std::cout << "shell " << shell_i << " np: " << particlesonshell << "\tfos "
-              << forceonshell << "\n";
-
+    // analytical force magnitude for a spherical potential outside a spherical
+    // shell of matter is M^2/r^4
+    analytical_force(shell_i) =
+        std::pow(massonshell, 2) / std::pow(currentshelldist, 4);
     massinshell += massonshell;
   }
 
