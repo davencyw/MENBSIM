@@ -303,8 +303,8 @@ void Menbsim::writeoutput() {
     std::string filename("menbsim_" + std::to_string(_simenv._runhash) + "_s" +
                          step_i + ".posdat");
     std::string fullfilepath(_simenv._outfolder + filename);
-    io::Writer::writetofile(fullfilepath, *_xposition, *_yposition,
-                            *_zposition);
+    io::Writer::writepostofile(fullfilepath, *_xposition, *_yposition,
+                               *_zposition);
   }
 }
 

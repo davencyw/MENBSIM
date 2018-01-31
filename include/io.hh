@@ -1,12 +1,12 @@
 /*__DECLARATION__
  *
- * 
+ *
  *      MENBSIM
  *      N-Body Simulation of a elliptic galaxy using multipole expansions.
  *      This project is done in the lecture of computational astrophysics
  *      in 2017 at University of Zurich (UZH).
  *
- *      author: 
+ *      author:
  *      david schmidig         [     david@davencyw.net   ]
  *      ETH Zurich             [ davschmi@student.ethz.ch ]
  *      DAVENCYW CODE          [        davencyw.net      ]
@@ -72,8 +72,8 @@ class Reader {
 class Writer {
  public:
   // only writes location of entities to a csv file
-  static void writetofile(std::string fullfilepath, array_t& xpos,
-                          array_t& ypos, array_t& zpos) {
+  static void writepostofile(std::string fullfilepath, array_t& xpos,
+                             array_t& ypos, array_t& zpos) {
     const unsigned int numentities(xpos.size());
 
     std::ofstream filestream;
@@ -89,6 +89,26 @@ class Writer {
     }
 
     // finalize
+    filestream.close();
+  }
+
+  static void write1ddensitytofile(std::string fullfilepath, array_t& bins,
+                                   std::string header) {
+    const unsigned int numbins(bins.size());
+
+    std::ofstream filestream;
+    filestream.open(fullfilepath, std::ios::out);
+
+    // write header
+    filestream << header << "\n";
+
+    // write data
+    for (unsigned bin_i = 0; bin_i < numbins - 1; ++bin_i) {
+      filestream << bins(bin_i) << " , ";
+    }
+
+    // finalize
+    filestream << bins(numbins - 1);
     filestream.close();
   }
 };
