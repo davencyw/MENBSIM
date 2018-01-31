@@ -1,6 +1,7 @@
 #include "menbsim.hh"
 
 #include "benchdec.hh"
+#include "const.hh"
 #include "io.hh"
 
 #include <algorithm>
@@ -57,7 +58,7 @@ void Menbsim::initialize(int checks) {
 
 bool Menbsim::verifyinputdensity(int output) {
   // creates histogram of current density in 3d
-  const unsigned int numbins(2000);
+  const unsigned int numbins(4000);
 
   const precision_t xdist(_inputdata.extent.x.second -
                           _inputdata.extent.x.first + 0.01);
@@ -65,9 +66,10 @@ bool Menbsim::verifyinputdensity(int output) {
                           _inputdata.extent.y.first + 0.01);
   const precision_t zdist(_inputdata.extent.z.second -
                           _inputdata.extent.z.first + 0.01);
-  const precision_t binwidthx(xdist / numbins);
-  const precision_t binwidthy(ydist / numbins);
-  const precision_t binwidthz(zdist / numbins);
+  const precision_t binwidthx(xdist / static_cast<precision_t>(numbins));
+  const precision_t binwidthy(ydist / static_cast<precision_t>(numbins));
+  const precision_t binwidthz(zdist / static_cast<precision_t>(numbins));
+  const precision_t hernquistbinwidth((binwidthx + binwidthy + binwidthz) / 3);
 
   array_t xbins = array_t::Zero(numbins);
   array_t ybins = array_t::Zero(numbins);
@@ -107,10 +109,15 @@ bool Menbsim::verifyinputdensity(int output) {
   zbins /= _numparticles;
 
   // hernquist density distribution
-  // precision_t r(0.0);
+  precision_t r(0.0);
   const unsigned int halfbins(numbins / 2);
+  // TODO(dave): specify scale length a
+  const precision_t a(0.0);
 
   for (size_t bin_i = 0; bin_i < halfbins; bin_i++) {
+    binshernquist(bin_i) = binshernquist(bin_i + halfbins) =
+        totalemass / (2 * __SC_PI) * a / r / std::pow(r + a, 3);
+    r += hernquistbinwidth;
   }
 
   // TODO(dave): write verification of rho(r) comparing to the analytical
