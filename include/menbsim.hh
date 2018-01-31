@@ -41,7 +41,7 @@ class Menbsim {
   //    0 - no output
   //    1 - terminal output short
   //    2 - terminal output long
-  bool verifyinputdensity(int output);
+  void verifyinputdensity(int output);
 
   void verifydirectforce();
 

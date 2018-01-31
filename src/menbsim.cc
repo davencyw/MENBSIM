@@ -56,7 +56,7 @@ void Menbsim::initialize(int checks) {
   _initialized = true;
 }
 
-bool Menbsim::verifyinputdensity(int output) {
+void Menbsim::verifyinputdensity(int output) {
   // creates histogram of current density in 3d
   const unsigned int numbins(4000);
 
@@ -120,12 +120,19 @@ bool Menbsim::verifyinputdensity(int output) {
     r += hernquistbinwidth;
   }
 
-  // TODO(dave): write verification of rho(r) comparing to the analytical
-  // density function described by Hernquist
+  // write densities to files
+  // write to file
+  std::string filename("menbsim_" + std::to_string(_simenv._runhash));
+  std::string fullfilepath(_simenv._outfolder + filename);
+  io::Writer::write1ddensitytofile(fullfilepath + "_x.denshist", xbins,
+                                   "xdensity");
+  io::Writer::write1ddensitytofile(fullfilepath + "_y.denshist", ybins,
+                                   "ydensity");
+  io::Writer::write1ddensitytofile(fullfilepath + "_z.denshist", zbins,
+                                   "zdensity");
+  io::Writer::write1ddensitytofile(fullfilepath + "_hernquist.denshist",
+                                   binshernquist, "hernquistdensity");
 
-  // TODO(dave): add poissonian error bars to the numeric density profile and
-  // plot
-  return true;
 }  // namespace Menbsim
 
 void Menbsim::verifydirectforce() {
