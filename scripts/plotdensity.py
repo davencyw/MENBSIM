@@ -87,4 +87,4 @@ if __name__ == "__main__":
     dataz = np.random.uniform(0, 10000, 5000)
 
     plot3ddensity(datax=datax, datay=datay, dataz=dataz)
-    #plot2ddensity(datax=datax, datay=datay)
+    plot2ddensity(datax=datax, datay=datay)

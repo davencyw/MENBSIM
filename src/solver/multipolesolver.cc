@@ -62,25 +62,47 @@ void Multipolesolver::getforceonparticles() {
         if (openingangle < 0.0) {
           // use this nodes expansion to get force
           const unsigned int nodedataindex(currentnode->getdataindex());
-
-          // monopoleforce
-          Eigen::Vector3d particle_i_to_nodecom(
+          // SSA
+          // monopole force
+          const Eigen::Vector3d particle_i_to_nodecom(
               _nodecomx(nodedataindex) - _xpos(particle_i),
               _nodecomy(nodedataindex) - _ypos(particle_i),
               _nodecomz(nodedataindex) - _zpos(particle_i));
           const precision_t distance(particle_i_to_nodecom.norm());
           const precision_t distance3(distance * distance * distance);
+          const precision_t distance4(distance3 * distance);
           const precision_t distance3inverse(1.0 / distance3);
+          const precision_t distance4inverse(1.0 / distance4);
           const precision_t massdistance3inverse(_masses(particle_i) *
                                                  distance3inverse);
-          (*_forcex)(particle_i) -=
-              massdistance3inverse * particle_i_to_nodecom(0);
-          (*_forcey)(particle_i) -=
-              massdistance3inverse * particle_i_to_nodecom(1);
-          (*_forcez)(particle_i) -=
-              massdistance3inverse * particle_i_to_nodecom(2);
+          const precision_t monopoleforcex(-massdistance3inverse *
+                                           particle_i_to_nodecom(0) *
+                                           _monopole(nodedataindex));
+          const precision_t monopoleforcey(-massdistance3inverse *
+                                           particle_i_to_nodecom(1) *
+                                           _monopole(nodedataindex));
+          const precision_t monopoleforcez(-massdistance3inverse *
+                                           particle_i_to_nodecom(2) *
+                                           _monopole(nodedataindex));
 
-          // TODO(dave): quadrapole force!
+          // quadrapole force!
+          const mat33_t localquadrapolemoment(_quadrapole[nodedataindex]);
+          const Eigen::Vector3d qr(localquadrapolemoment *
+                                   particle_i_to_nodecom);
+          const precision_t rqr(particle_i_to_nodecom.transpose() * qr);
+          const Eigen::Vector3d quadrapolemagnitude =
+              (-5.0 / 2.0 * rqr * distance4inverse) * particle_i_to_nodecom;
+          const Eigen::Vector3d qaudrapoleforcevector =
+              qr * distance4inverse + quadrapolemagnitude;
+
+          const precision_t quadrapoleforcex(qaudrapoleforcevector(0));
+          const precision_t quadrapoleforcey(qaudrapoleforcevector(1));
+          const precision_t quadrapoleforcez(qaudrapoleforcevector(2));
+
+          // write back to force vector
+          (*_forcex)(particle_i) += monopoleforcex + quadrapoleforcex;
+          (*_forcey)(particle_i) += monopoleforcey + quadrapoleforcey;
+          (*_forcez)(particle_i) += monopoleforcez + quadrapoleforcez;
 
         } else {
           // push back childnodes of currentnode
@@ -237,8 +259,17 @@ void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
     _nodecomy(nodedataindex) = comy * totalmassinverse;
     _nodecomz(nodedataindex) = comz * totalmassinverse;
 
-    mat33_t quadrapole;
-    getquadrapole(node, quadrapole);
+    mat33_t localquadrapolemoment = mat33_t::Zero();
+    for (unsigned int child_i = 0; child_i < 8; child_i++) {
+      const unsigned int childdataindex(childnode_i->getdataindex());
+      const oct::Octreenode* childnode_i((*children)[child_i]);
+
+      // TODO(dave): get quadrapolemoment recursively!
+      Eigen::Vector3d displacement();
+
+      // quadrapole
+      localquadrapolemoment += _quadrapole(childdataindex);
+    }
   }
 }
 
@@ -266,6 +297,7 @@ void Multipolesolver::getquadrapole(const oct::Octreenode* node,
     const precision_t s00(3.0 * (xpos2)-length);
     const precision_t s11(3.0 * (ypos2)-length);
     const precision_t s22(3.0 * (ypos2)-length);
+    // TODO(dave): check
     quadrapole(0, 0) += s00;
     quadrapole(1, 1) += s11;
     quadrapole(2, 2) += s22;
