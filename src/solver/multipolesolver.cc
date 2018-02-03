@@ -85,7 +85,7 @@ void Multipolesolver::getforceonparticles() {
                                            particle_i_to_nodecom(2) *
                                            _monopole(nodedataindex));
 
-          // quadrapole force!
+          // quadrapole force
           const mat33_t localquadrapolemoment(_quadrapole[nodedataindex]);
           const Eigen::Vector3d qr(localquadrapolemoment *
                                    particle_i_to_nodecom);
@@ -261,14 +261,20 @@ void Multipolesolver::expandmoments(const oct::Octreenode* const node) {
 
     mat33_t localquadrapolemoment = mat33_t::Zero();
     for (unsigned int child_i = 0; child_i < 8; child_i++) {
-      const unsigned int childdataindex(childnode_i->getdataindex());
       const oct::Octreenode* childnode_i((*children)[child_i]);
+      const unsigned int childdataindex(childnode_i->getdataindex());
 
-      // TODO(dave): get quadrapolemoment recursively!
-      Eigen::Vector3d displacement();
+      // get quadrapolemoment recursively!
+      Eigen::Vector3d displacement(_nodecomx(childdataindex) - comx,
+                                   _nodecomy(childdataindex) - comy,
+                                   _nodecomz(childdataindex) - comz);
+      mat33_t compositemoment =
+          (3.0 * displacement * displacement.transpose() -
+           ((displacement.norm() * displacement.norm() * mat33_t::Identity()) *
+            _monopole(childdataindex)));
 
       // quadrapole
-      localquadrapolemoment += _quadrapole(childdataindex);
+      localquadrapolemoment += _quadrapole[childdataindex] + compositemoment;
     }
   }
 }
@@ -297,7 +303,6 @@ void Multipolesolver::getquadrapole(const oct::Octreenode* node,
     const precision_t s00(3.0 * (xpos2)-length);
     const precision_t s11(3.0 * (ypos2)-length);
     const precision_t s22(3.0 * (ypos2)-length);
-    // TODO(dave): check
     quadrapole(0, 0) += s00;
     quadrapole(1, 1) += s11;
     quadrapole(2, 2) += s22;

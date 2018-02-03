@@ -169,7 +169,6 @@ void Menbsim::verifydirectforce() {
   precision_t currentshelldist(0);
   unsigned int particle_i(0);
   unsigned int sortedindex(sortedindices[0]);
-  unsigned int totpart(0);
 
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
     unsigned int numparticles_inshelli(0);
