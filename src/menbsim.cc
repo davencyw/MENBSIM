@@ -175,7 +175,7 @@ void Menbsim::verifyinputdensity(int output) {
 
 void Menbsim::verifydirectforce() {
   // verify shells with Newtons second theorem for spherical potentials
-  const unsigned int numshells(30);
+  const unsigned int numshells(60);
 
   array_t analytical_force(numshells);
   array_t averaged_force(numshells);
@@ -198,7 +198,7 @@ void Menbsim::verifydirectforce() {
 
   // empiric shell distance for provided input dataset
   const precision_t shelldist(10.0 / static_cast<precision_t>(numshells));
-  const precision_t shelldx(shelldist * 0.1);
+  const precision_t shelldx(shelldist * 0.05);
   const precision_t shelldxhalf(shelldx);
 
   precision_t massinshell(0.0);
