@@ -137,7 +137,6 @@ void Menbsim::verifyinputdensity(int output) {
 
 void Menbsim::verifydirectforce() {
   step();
-  return;
   // verify shells with Newtons second theorem for spherical potentials
   const unsigned int numshells(50);
 
@@ -149,7 +148,7 @@ void Menbsim::verifydirectforce() {
   array_t particledist = (*_xposition) * (*_xposition) +
                          (*_yposition) * (*_yposition) +
                          (*_zposition) * (*_zposition);
-  particledist.sqrt();
+  particledist = particledist.sqrt();
   std::vector<unsigned int> sortedindices(_numparticles);
   iota(sortedindices.begin(), sortedindices.end(), 0);
 
@@ -165,19 +164,24 @@ void Menbsim::verifydirectforce() {
   const precision_t shelldx(shelldist * 0.1);
   const precision_t shelldxhalf(shelldx);
 
+  for (unsigned i = 0; i < _numparticles; ++i) {
+    unsigned sortedindex(sortedindices[i]);
+    std::cout << particledist(sortedindex) << "\t" << _forcex(sortedindex)
+              << "\n";
+  }
+
+  return;
+
   precision_t massinshell(0.0);
   precision_t currentshelldist(0);
   unsigned int particle_i(0);
   unsigned int sortedindex(sortedindices[0]);
 
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
-    unsigned int numparticles_inshelli(0);
-
     currentshelldist += shelldist;
     while (particledist(sortedindex) < currentshelldist - shelldxhalf &&
            particle_i < _numparticles - 1) {
       // inside shell
-      ++numparticles_inshelli;
       massinshell += (*_masses)(sortedindex);
       // next particle
       sortedindex = sortedindices[++particle_i];
@@ -201,7 +205,7 @@ void Menbsim::verifydirectforce() {
     // analytical force magnitude for a spherical potential outside a spherical
     // shell of matter is M^2/r^4
     analytical_force(shell_i) =
-        std::pow(massonshell, 2) / std::pow(currentshelldist, 4);
+        std::pow(massinshell, 2) / std::pow(currentshelldist, 4);
     massinshell += massonshell;
   }
 
@@ -209,8 +213,8 @@ void Menbsim::verifydirectforce() {
       << "\n\n\nDIRECT FORCEVERIFICATION\n\n"
       << "AV FORCE: \t\t AN FORCE:\n_____________________________________\n";
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
-    std::cout << averaged_force(shell_i) << " , " << analytical_force(shell_i)
-              << "\n";
+    std::cout << averaged_force(shell_i) << " \t,\t "
+              << analytical_force(shell_i) << "\n";
   }
   std::cout << "\n\n\n";
 }

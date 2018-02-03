@@ -4,7 +4,6 @@
 
 #include <iostream>
 
-// TODO(dave): work with eigens raw buffer to get autovectorization!
 void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
                         const array_t& ypos, const array_t& zpos,
                         const array_t& masses, array_t* forcex, array_t* forcey,
@@ -13,6 +12,7 @@ void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
 #pragma omp parallel for
   for (unsigned int i = 0; i < numparticles; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
+      std::cout << "force: " << i << "\t" << j;
       // SSA
       const precision_t x1(xpos(i));
       const precision_t y1(ypos(i));
