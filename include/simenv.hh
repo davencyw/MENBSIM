@@ -49,17 +49,23 @@ struct SimEnv {
   unsigned int _outputstep;
 
   void summarizetooutput() {
-    std::cout << "\n\n\n__________________________simenv_summary:\n____________"
-                 "______________"
-              << "_dt          :\t" << _dt << "_nsteps      :\t" << _nsteps
-              << "_softening   :\t" << _softeningparam << "_solvertype  :\t"
-              << _solvertype << "_leafnodesize:\t" << _octreeleafnodesize
-              << "\n_nthreads    :\t" << _nthreads << "_scheduling  :\t"
-              << _scheduling << "_cuda        :\t" << _cuda
-              << "\n_outfolder   :\t" << _outfolder << "_inputfile   :\t"
-              << _inputfilepath << "_runhash     :\t" << _runhash
-              << "_nooutput    :\t" << _nooutput << "_outputstep  :\t"
-              << _outputstep << "\n__________________________\n\n";
+    std::cout << "\n\n\n__________________________\n"
+              << "simenv_summary:"
+              << "\n__________________________\n\n"
+              << "_dt          :\t" << _dt << "\n"
+              << "_nsteps      :\t" << _nsteps << "\n"
+              << "_softening   :\t" << _softeningparam << "\n"
+              << "_solvertype  :\t" << _solvertype << "\n"
+              << "_leafnodesize:\t" << _octreeleafnodesize << "\n"
+              << "\n_nthreads    :\t" << _nthreads << "\n"
+              << "_scheduling  :\t" << _scheduling << "\n"
+              << "_cuda        :\t" << _cuda << "\n"
+              << "\n_outfolder   :\t" << _outfolder << "\n"
+              << "_inputfile   :\t" << _inputfilepath << "\n"
+              << "_runhash     :\t" << _runhash << "\n"
+              << "_nooutput    :\t" << _nooutput << "\n"
+              << "_outputstep  :\t" << _outputstep << "\n"
+              << "\n__________________________\n\n";
   }
 };
 
