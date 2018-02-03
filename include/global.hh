@@ -27,6 +27,7 @@
 #define __P_DEF_NOOUTPUT false
 #define __P_DEF_SOLVERTYPE 1
 #define __P_DEF_OCTREELEAFNODESIZE 10
+#define __P_DEF_OUTPUTSTEP 1
 
 // typedefs
 typedef double precision_t;

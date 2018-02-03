@@ -31,6 +31,7 @@ void cmdpars(const int argc, char const* argv[], SimEnv& simenv) {
   simenv._nooutput = __P_DEF_NOOUTPUT;
   simenv._solvertype = __P_DEF_SOLVERTYPE;
   simenv._octreeleafnodesize = __P_DEF_OCTREELEAFNODESIZE;
+  simenv._outputstep = __P_DEF_OUTPUTSTEP;
 
   // BOOST PRORGAM OPTIONS
   namespace po = boost::program_options;

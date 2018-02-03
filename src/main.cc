@@ -14,6 +14,8 @@ int main(int argc, char const *argv[]) {
   SimEnv simenv;
   cmdpars(argc, argv, simenv);
 
+  simenv.summarizetooutput();
+
   // create terminal output
   std::cout << "\033[0m\n"
             << "\n"
