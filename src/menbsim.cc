@@ -13,6 +13,44 @@
 
 namespace Menbsim {
 
+void Menbsim::getdirectforce(const unsigned particle, precision_t& fx,
+                             precision_t& fy, precision_t& fz,
+                             std::vector<unsigned>& particles) {
+  fx = fy = fz = 0.0;
+  const precision_t x1((*_xposition)(particle));
+  const precision_t y1((*_yposition)(particle));
+  const precision_t z1((*_zposition)(particle));
+  for (auto particleindex : particles) {
+    // SSA
+
+    const precision_t x2((*_xposition)(particleindex));
+    const precision_t y2((*_yposition)(particleindex));
+    const precision_t z2((*_zposition)(particleindex));
+
+    const precision_t x1x2(x1 - x2);
+    const precision_t y1y2(y1 - y2);
+    const precision_t z1z2(z1 - z2);
+
+    const precision_t rmagnitude(std::sqrt(x1x2 * x1x2 + y1y2 * y1y2 +
+                                           z1z2 * z1z2 +
+                                           _softeningparam * _softeningparam));
+
+    const precision_t m1((*_masses)(particle));
+    const precision_t m2((*_masses)(particleindex));
+
+    const precision_t forcemagnitude(m1 * m2 /
+                                     (rmagnitude * rmagnitude * rmagnitude));
+
+    const precision_t fx1(forcemagnitude * x1x2);
+    const precision_t fy1(forcemagnitude * y1y2);
+    const precision_t fz1(forcemagnitude * z1z2);
+
+    fx += fx1;
+    fy += fy1;
+    fz += fz1;
+  }
+}
+
 void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
   _inputdata = io::Reader::readfromfile(_simenv._inputfilepath);
@@ -136,9 +174,8 @@ void Menbsim::verifyinputdensity(int output) {
 }  // namespace Menbsim
 
 void Menbsim::verifydirectforce() {
-  step();
   // verify shells with Newtons second theorem for spherical potentials
-  const unsigned int numshells(50);
+  const unsigned int numshells(30);
 
   array_t analytical_force(numshells);
   array_t averaged_force(numshells);
@@ -160,54 +197,68 @@ void Menbsim::verifydirectforce() {
        });
 
   // empiric shell distance for provided input dataset
-  const precision_t shelldist(2940.53 / static_cast<precision_t>(numshells));
+  const precision_t shelldist(10.0 / static_cast<precision_t>(numshells));
   const precision_t shelldx(shelldist * 0.1);
   const precision_t shelldxhalf(shelldx);
-
-  for (unsigned i = 0; i < _numparticles; ++i) {
-    unsigned sortedindex(sortedindices[i]);
-    std::cout << particledist(sortedindex) << "\t" << _forcex(sortedindex)
-              << "\n";
-  }
-
-  return;
 
   precision_t massinshell(0.0);
   precision_t currentshelldist(0);
   unsigned int particle_i(0);
   unsigned int sortedindex(sortedindices[0]);
+  std::vector<unsigned> idxinshell;
+  std::vector<unsigned> idxonshell;
 
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
     currentshelldist += shelldist;
+
     while (particledist(sortedindex) < currentshelldist - shelldxhalf &&
            particle_i < _numparticles - 1) {
       // inside shell
       massinshell += (*_masses)(sortedindex);
+      idxinshell.push_back(sortedindex);
       // next particle
       sortedindex = sortedindices[++particle_i];
     }
+
     precision_t massonshell(0.0);
     precision_t forceonshell(0.0);
     unsigned int particlesonshell(0);
+
     while (particledist(sortedindex) > currentshelldist - shelldxhalf &&
            particledist(sortedindex) < currentshelldist + shelldxhalf &&
            particle_i < _numparticles - 1) {
       // on shell
       ++particlesonshell;
       massonshell += (*_masses)(sortedindex);
-      forceonshell += std::sqrt(_forcex(sortedindex) * _forcex(sortedindex) +
-                                _forcey(sortedindex) * _forcey(sortedindex) +
-                                _forcez(sortedindex) * _forcez(sortedindex));
+      idxonshell.push_back(sortedindex);
+
+      // get force against all particles inside shell
+      precision_t fx, fy, fz = 0.0;
+      getdirectforce(sortedindex, fx, fy, fz, idxinshell);
+
+      forceonshell += std::sqrt(fx * fx + fy * fy + fz * fz);
       sortedindex = sortedindices[++particle_i];
     }
+
     averaged_force(shell_i) =
         forceonshell / static_cast<precision_t>(particlesonshell);
     // analytical force magnitude for a spherical potential outside a spherical
-    // shell of matter is M^2/r^4
+    // shell of matter
+    const precision_t analytical_force_1d(massinshell /
+                                          (std::pow(currentshelldist, 2)));
     analytical_force(shell_i) =
-        std::pow(massinshell, 2) / std::pow(currentshelldist, 4);
+        std::sqrt(3 * analytical_force_1d * analytical_force_1d) * 100;
     massinshell += massonshell;
+
+    std::cout << "in: " << idxinshell.size() << "\t"
+              << "on: " << idxonshell.size() << "\n";
+
+    // move idx on shell into shell
+    idxinshell.insert(idxinshell.end(), idxonshell.begin(), idxonshell.end());
+    idxonshell.clear();
   }
+
+  std::cout << "TOTMASS: " << massinshell << "\n\n";
 
   std::cout
       << "\n\n\nDIRECT FORCEVERIFICATION\n\n"

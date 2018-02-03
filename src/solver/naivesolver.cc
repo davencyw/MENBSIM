@@ -12,7 +12,6 @@ void Naivesolver::solve(const unsigned int numparticles, const array_t& xpos,
 #pragma omp parallel for
   for (unsigned int i = 0; i < numparticles; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      std::cout << "force: " << i << "\t" << j;
       // SSA
       const precision_t x1(xpos(i));
       const precision_t y1(ypos(i));

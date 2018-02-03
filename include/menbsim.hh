@@ -62,6 +62,9 @@ class Menbsim {
   precision_t gettimestep();
   void writeoutput();
 
+  void getdirectforce(const unsigned particle, precision_t& fx, precision_t& fy,
+                      precision_t& fz, std::vector<unsigned>& particles);
+
   bool _initialized = false;
 
   precision_t _deltat;

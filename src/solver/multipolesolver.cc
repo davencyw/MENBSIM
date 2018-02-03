@@ -47,7 +47,6 @@ void Multipolesolver::getforceonparticles() {
   // TODO(dave): check this omp implementation
   //#pragma omp parallel for private(nodestoprocess)
   for (unsigned particle_i = 0; particle_i < _numparticles; ++particle_i) {
-    std::cout << "pi: " << particle_i << "\n";
     // iterate over highest possible node for each particle
     std::stack<const oct::Octreenode*> nodestoprocess = rootnodestoprocess;
     while (!nodestoprocess.empty()) {
@@ -157,11 +156,8 @@ void Multipolesolver::getdirectforce(const unsigned int particle_i,
       (*_forcex)(particle_i) += fx;
       (*_forcey)(particle_i) += fy;
       (*_forcez)(particle_i) += fz;
-
-      std::cout << particle_i << "\t" << particle_j << "\t\t" << fx << "\n";
     }
   }
-  std::cout << "\n";
 }
 
 void Multipolesolver::createTree(const unsigned int leafnodesize) {
