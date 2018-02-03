@@ -56,18 +56,20 @@ void Multipolesolver::getforceonparticles() {
         // get direct force evaluations from particles in this leafnode
         getdirectforce(particle_i, currentnode);
       } else {
-        // TODO(dave): get opening angle
-        precision_t openingangle(0.0);
-        // TODO(dave): set openingangle threshhold
-        if (openingangle < 0.0) {
+        // get opening angle
+        const precision_t halfwidth(currentnode->gethalfwidth());
+        const unsigned int nodedataindex(currentnode->getdataindex());
+        const Eigen::Vector3d particle_i_to_nodecom(
+            _nodecomx(nodedataindex) - _xpos(particle_i),
+            _nodecomy(nodedataindex) - _ypos(particle_i),
+            _nodecomz(nodedataindex) - _zpos(particle_i));
+        const precision_t openingangle(
+            2.0 * std::atan2(halfwidth, particle_i_to_nodecom.norm()));
+        if (openingangle < 0.1) {
           // use this nodes expansion to get force
-          const unsigned int nodedataindex(currentnode->getdataindex());
           // SSA
           // monopole force
-          const Eigen::Vector3d particle_i_to_nodecom(
-              _nodecomx(nodedataindex) - _xpos(particle_i),
-              _nodecomy(nodedataindex) - _ypos(particle_i),
-              _nodecomz(nodedataindex) - _zpos(particle_i));
+
           const precision_t distance(particle_i_to_nodecom.norm());
           const precision_t distance3(distance * distance * distance);
           const precision_t distance4(distance3 * distance);

@@ -79,6 +79,7 @@ class Octreenode {
   const unsigned int getdataindex() const { return _dataindex; }
   void setdataindex(unsigned int dataindex) { _dataindex = dataindex; }
   const Octreenode* getparent() const { return _parent; }
+  const precision_t gethalfwidth() const { return _halfwidth; }
 
  private:
   const unsigned int splitleaf();
