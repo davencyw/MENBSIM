@@ -11,7 +11,7 @@ INFOLDER="../data/in/data.ascii"
 #INFOLDER="../data/in/testforce.ascii"
 
 SOLVERTYPE=1
-SOFTENING=0.01
+SOFTENING=5
 NUMSTEPS=10
 
 OMPNUMTHREADS=1

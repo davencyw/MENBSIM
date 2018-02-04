@@ -65,7 +65,7 @@ void Multipolesolver::getforceonparticles() {
             _nodecomz(nodedataindex) - _zpos(particle_i));
         const precision_t openingangle(
             2.0 * std::atan2(halfwidth, particle_i_to_nodecom.norm()));
-        if (std::abs(openingangle) < 0) {
+        if (std::abs(openingangle) < 0.1) {
           // use this nodes expansion to get force
           // SSA
           // monopole force

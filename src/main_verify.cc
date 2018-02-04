@@ -41,7 +41,7 @@ int main(int argc, char const *argv[]) {
   // start main program verification
   Menbsim::Menbsim sim(simenv);
 
-  sim.initialize(Menbsim::VERIFYDENSITY);
+  sim.initialize(Menbsim::NOVERIFICATION);
   sim.verifydirectforce();
 
   return 0;

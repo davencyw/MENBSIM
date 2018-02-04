@@ -55,6 +55,7 @@ void Menbsim::initialize(int checks) {
   std::cout << "read inputfile " << _simenv._inputfilepath << "\n\n";
   _inputdata = io::Reader::readfromfile(_simenv._inputfilepath);
   _numparticles = _inputdata.numparticles;
+  _softeningparam = _simenv._softeningparam;
 
   // sanitize input
   for (unsigned i = 0; i < _inputdata.numdata; ++i) {
@@ -154,7 +155,7 @@ void Menbsim::verifyinputdensity(int output) {
 
   for (size_t bin_i = 0; bin_i < halfbins; bin_i++) {
     binshernquist(bin_i) = binshernquist(bin_i + halfbins) =
-        totalemass / (2 * __SC_PI) * a / r / std::pow(r + a, 3);
+        totalemass / (2.0 * __SC_PI) * a / r / std::pow(r + a, 3);
     r += hernquistbinwidth;
   }
 
@@ -250,22 +251,17 @@ void Menbsim::verifydirectforce() {
         std::sqrt(3 * analytical_force_1d * analytical_force_1d) * 100;
     massinshell += massonshell;
 
-    std::cout << "in: " << idxinshell.size() << "\t"
-              << "on: " << idxonshell.size() << "\n";
-
     // move idx on shell into shell
     idxinshell.insert(idxinshell.end(), idxonshell.begin(), idxonshell.end());
     idxonshell.clear();
   }
 
-  std::cout << "TOTMASS: " << massinshell << "\n\n";
+  std::cout << "softening: " << _softeningparam << "\n";
 
-  std::cout
-      << "\n\n\nDIRECT FORCEVERIFICATION\n\n"
-      << "AV FORCE: \t\t AN FORCE:\n_____________________________________\n";
+  std::cout << "AV FORCE: \t\t AN FORCE:\n";
   for (unsigned int shell_i = 0; shell_i < numshells; shell_i++) {
-    std::cout << averaged_force(shell_i) << " \t,\t "
-              << analytical_force(shell_i) << "\n";
+    std::cout << averaged_force(shell_i) << "," << analytical_force(shell_i)
+              << "," << shell_i * shelldist << "\n";
   }
   std::cout << "\n\n\n";
 }
