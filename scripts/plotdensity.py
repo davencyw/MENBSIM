@@ -51,7 +51,7 @@ def plot3ddensity(datax, datay, dataz, filepath='', time=0, xmin=0, xmax=0, ymin
     df = pd.DataFrame(data, columns=["x", "y", "z"])
     fig = sb.plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(df['x'], df['y'], df['z'],c=density, cmap=cmap, s=22)
+    ax.scatter(df['x'], df['y'], df['z'],c=density, cmap=cmap, s=6)
     ax.view_init(rota, rotb)
 
     if(xmin == 0 and xmax == 0 and ymin == 0 and ymax == 0 and zmin == 0 and zmax == 0):
@@ -76,8 +76,7 @@ def plot3ddensity(datax, datay, dataz, filepath='', time=0, xmin=0, xmax=0, ymin
     return (xmin, xmax, ymin, ymax, zmin, zmax)
 
 
-def plotsimdata(filepath):
-    return
+
 
 if __name__ == "__main__":
 
