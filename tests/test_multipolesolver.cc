@@ -34,4 +34,3 @@ TEST(MultipoleTest, Monopole) {
   EXPECT_EQ((*monopole)(21), 3);
 }
 
-TEST(MultipoleTest, Quadrapole) {}
